@@ -1,17 +1,46 @@
 "use client";
 import React from "react";
-
 import ProtectedRoute from "@/context/ProtectedRoute";
+import { registerSyncfusionLicense } from "@/utils/registerLicense";
+import {
+  Category,
+  ChartComponent,
+  ColumnSeries,
+  Inject,
+  LineSeries,
+  SeriesCollectionDirective,
+  SeriesDirective,
+  Tooltip,
+} from "@syncfusion/ej2-react-charts";
+
+registerSyncfusionLicense();
+
+
+
 function Page() {
+  const data: object = [
+    { x: 1, y: 10 },
+    { x: 10, y: 50 },
+    { x: 100, y: 100 },
+  ];
+  type ValueType = "DateTime" | "Double" | "Category" | "Logarithmic";
+
+  const primaryxAxis: { valueType: ValueType } = { valueType: "Category" };
   return (
     <ProtectedRoute allowedRoles={["teacher"]}>
       <div className="min-h-screen bg-gray-100 p-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-blue-600 mb-4">
-            Teacher Page
-          </h1>
-          <p className="text-gray-600 mb-8">Welcome to the student page!</p>
-        </div>
+        <ChartComponent id="charts" primaryXAxis={primaryxAxis}>
+          <Inject services={[ColumnSeries, Tooltip, LineSeries, Category]} />
+          <SeriesCollectionDirective>
+            <SeriesDirective
+              dataSource={data}
+              xName="x"
+              yName="y"
+              name="Sales"
+            />
+          </SeriesCollectionDirective>
+        </ChartComponent>
+        
       </div>
     </ProtectedRoute>
   );
