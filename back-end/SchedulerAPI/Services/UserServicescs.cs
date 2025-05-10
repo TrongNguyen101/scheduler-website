@@ -7,7 +7,13 @@ namespace SchedulerAPI.Services
     {
         public async Task<List<UserDTO>> ListAllUser()
         {
-            var listUser = await UserDAO.GetAllUsers();
+            var listUser = await UserDAO.GetInstance().GetAllUsers();
+            return listUser.Select(user => new UserDTO
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            }).ToList();
         }
     }
 }
