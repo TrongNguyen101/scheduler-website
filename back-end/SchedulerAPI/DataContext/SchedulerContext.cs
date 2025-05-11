@@ -3,19 +3,40 @@ using SchedulerAPI.Model;
 
 namespace SchedulerAPI.DataContext
 {
+    /// <summary>
+    /// Database context class that provides access to database tables and manages the ORM functionality.
+    /// This class inherits from EF Core's DbContext and configures the database connection.
+    /// </summary>
     public class SchedulerContext : DbContext
     {
+        /// <summary>
+        /// Default constructor used for design-time activities like migrations
+        /// </summary>
         public SchedulerContext()
         {
         }
+
+        /// <summary>
+        /// Constructor that accepts DbContextOptions, typically used with dependency injection
+        /// </summary>
+        /// <param name="options">Configuration options for the context</param>
         public SchedulerContext(DbContextOptions<SchedulerContext> options) : base(options)
         {
         }
 
+        /// <summary>
+        /// DbSet representing the Users table in the database
+        /// </summary>
         public virtual DbSet<User> Users { get; set; }
+
+        /// <summary>
+        /// Configures the database connection if not already configured
+        /// Uses connection string from appsettings.json
+        /// </summary>
+        /// <param name="optionsBuilder">Builder used to create or modify options for this context</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if(!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured)
             {
                 IConfiguration configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
@@ -26,9 +47,14 @@ namespace SchedulerAPI.DataContext
             }
         }
 
+        /// <summary>
+        /// Configures the database model and seeds initial data
+        /// </summary>
+        /// <param name="modelBuilder">Builder used to construct the model for this context</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasData(new User 
+            // Seed the Users table with initial user data
+            modelBuilder.Entity<User>().HasData(new User
             {
                 Id = 1,
                 Name = "John Doe",

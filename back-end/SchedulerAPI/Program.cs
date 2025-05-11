@@ -1,7 +1,9 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using SchedulerAPI.DataContext;
 using SchedulerAPI.Services;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using SchedulerAPI.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<SchedulerContext>();
+builder.Services.AddAutoMapper(typeof(AutoMappingProfiles));
 builder.Services.AddCors();
 builder.Services.AddScoped<IUserServices, UserServicescs>();
 
