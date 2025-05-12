@@ -9,5 +9,6 @@ namespace SchedulerAPI.Services
         Task AddUserAsync(AddUserDTO addUserDTO);
         Task UpdateUserAsync(UserDTO userDTO);
         Task DeleteUserAsync(int id);
+        Task<string> GetRoleByEmail(string email);
     }
 }

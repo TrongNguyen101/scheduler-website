@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SchedulerAPI.DTO;
 using SchedulerAPI.Services;
 
@@ -46,6 +47,7 @@ namespace SchedulerAPI.Controllers
         /// 404 Not Found if no users exist.
         /// 500 Internal Server Error if an exception occurs during processing.
         /// </returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet("Get")]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -82,6 +84,7 @@ namespace SchedulerAPI.Controllers
         /// 404 Not Found if the user does not exist.
         /// 500 Internal Server Error if an exception occurs during processing.
         /// </returns>
+        [Authorize(Roles = "User")]
         [HttpGet("Get/{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
@@ -110,15 +113,16 @@ namespace SchedulerAPI.Controllers
         /// <param name="addUserDTO">The data transfer object containing user information.</param>
         /// <returns>
         /// 200 OK if the user is successfully added.
+        /// 400 Bad Request if the model state is invalid.
         /// 500 Internal Server Error if an exception occurs during processing.
         /// </returns>
         [HttpPost("Add")]
-        public async Task<IActionResult> AddUser(AddUserDTO addUserDTO)
+        public async Task<IActionResult> AddUser([FromBody] AddUserDTO addUserDTO)
         {
             logger.LogInformation("Adding a new user.");
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     var errors = ModelState.Values
                         .SelectMany(v => v.Errors)
@@ -149,7 +153,7 @@ namespace SchedulerAPI.Controllers
         /// 500 Internal Server Error if an exception occurs during processing.
         /// </returns>
         [HttpPatch("Update")]
-        public async Task<IActionResult> UpdateUser(UserDTO userDTO)
+        public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDTO)
         {
             logger.LogInformation($"Updating user with ID {userDTO.Id}.");
             try
@@ -171,6 +175,15 @@ namespace SchedulerAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a user from the system by their ID.
+        /// </summary>
+        /// <param name="id">The unique identifier of the user to delete.</param>
+        /// <returns>
+        /// 200 OK if the user is successfully deleted.
+        /// 404 Not Found if the user does not exist.
+        /// 500 Internal Server Error if an exception occurs during processing.
+        /// </returns>
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -190,6 +203,28 @@ namespace SchedulerAPI.Controllers
             catch (Exception ex)
             {
                 logger.LogError($"Error deleting user with ID {id}: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("Get/Role/{email}")]
+        public async Task<IActionResult> GetRoleByEmail(string email)
+        {
+            logger.LogInformation($"Fetching role for user with email {email}.");
+            try
+            {
+                var role = await userServices.GetRoleByEmail(email);
+                if (string.IsNullOrEmpty(role))
+                {
+                    logger.LogWarning($"No role found for user with email {email}.");
+                    return NotFound($"No role found for user with email {email}.");
+                }
+                logger.LogInformation($"Role for user with email {email} found: {role}");
+                return Ok(role);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error fetching role for user with email {email}: {ex.Message}");
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
         }

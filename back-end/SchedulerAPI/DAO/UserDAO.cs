@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchedulerAPI.DataContext;
-using SchedulerAPI.DTO;
 using SchedulerAPI.Model;
 
 namespace SchedulerAPI.DAO
@@ -13,8 +12,21 @@ namespace SchedulerAPI.DAO
     public class UserDAO
     {
         #region Singleton Design Pattern
+        /// <summary>
+        /// Volatile instance ensures thread safety for double-check locking pattern
+        /// </summary>
         public static volatile UserDAO Instance;
+
+        /// <summary>
+        /// Lock object for thread synchronization when creating the singleton instance
+        /// </summary>
         public static readonly object lockObject = new object();
+
+        /// <summary>
+        /// Gets the singleton instance of UserDAO
+        /// Implements double-checked locking pattern for thread safety
+        /// </summary>
+        /// <returns>The singleton instance of UserDAO</returns>
         public static UserDAO GetInstance()
         {
             if (Instance == null)
@@ -36,6 +48,7 @@ namespace SchedulerAPI.DAO
         /// Retrieves all users from the database
         /// </summary>
         /// <returns>A task that represents the asynchronous operation, containing a list of all users</returns>
+        /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task<List<User>> GetAllUsers()
         {
             using (var context = new SchedulerContext())
@@ -51,6 +64,12 @@ namespace SchedulerAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Retrieves a user by their email address
+        /// </summary>
+        /// <param name="email">The email address to search for</param>
+        /// <returns>A task that represents the asynchronous operation, containing the found user or null if not found</returns>
+        /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task<User> GetUserByEmailAsync(string email)
         {
             using (var context = new SchedulerContext())
@@ -66,6 +85,12 @@ namespace SchedulerAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Retrieves a user by their ID
+        /// </summary>
+        /// <param name="id">The ID of the user to retrieve</param>
+        /// <returns>A task that represents the asynchronous operation, containing the found user or null if not found</returns>
+        /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task<User> GetUserById(int id)
         {
             using (var context = new SchedulerContext())
@@ -81,6 +106,12 @@ namespace SchedulerAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Adds a new user to the database
+        /// </summary>
+        /// <param name="user">The user object to add</param>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task AddUserAsync(User user)
         {
             using (var context = new SchedulerContext())
@@ -97,6 +128,12 @@ namespace SchedulerAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Updates an existing user in the database
+        /// </summary>
+        /// <param name="user">The user object with updated information</param>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task UpdateUserAsync(User user)
         {
             using (var context = new SchedulerContext())
@@ -113,6 +150,12 @@ namespace SchedulerAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Deletes a user from the database by their ID
+        /// </summary>
+        /// <param name="id">The ID of the user to delete</param>
+        /// <returns>A task that represents the asynchronous operation</returns>
+        /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task DeleteUserAsync(int id)
         {
             using (var context = new SchedulerContext())
@@ -129,6 +172,26 @@ namespace SchedulerAPI.DAO
                 catch (Exception ex)
                 {
                     throw new Exception($"Error deleting user: {ex.Message}");
+                }
+            }
+        }
+
+        public async Task<string> GetRoleByEmail(string email)
+        {
+            using (var context = new SchedulerContext())
+            {
+                try
+                {
+                    var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+                    if (user != null)
+                    {
+                        return user.Role;
+                    }
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Error retrieving role for user with email {email}: {ex.Message}");
                 }
             }
         }
