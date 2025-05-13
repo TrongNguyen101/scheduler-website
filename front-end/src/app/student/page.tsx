@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import ProtectedRoute from "@/context/ProtectedRoute";
-import MainLayout from "@/component/Layout/MainLayout";
+import Header from "@/component/Header/header";
+import { Schedule } from "@/component/Schedule";
 function Page() {
   return (
     // <ProtectedRoute allowedRoles={["student"]}>
@@ -14,7 +15,10 @@ function Page() {
     //     </div>
     //   </div>
     // </ProtectedRoute>
-    <MainLayout />
+    <>
+      <Header />
+      <Schedule />
+    </>
   );
 }
 
