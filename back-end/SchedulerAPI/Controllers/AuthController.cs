@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchedulerAPI.DAO;
 using SchedulerAPI.DTO;
 using SchedulerAPI.Services;
 
@@ -13,13 +12,17 @@ namespace SchedulerAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ITokenServices tokenServices;
+        private readonly IAuthServices authServices;
         private readonly ILogger<AuthController> logger;
         /// <summary>
         /// Constructor - initializes the controller with token service dependency
         /// </summary>
         /// <param name="tokenServices">Service for generating authentication tokens</param>
-        public AuthController(ITokenServices tokenServices, ILogger<AuthController> logger)
+        public AuthController(ITokenServices tokenServices, 
+            ILogger<AuthController> logger, 
+            IAuthServices authServices)
         {
+            this.authServices = authServices;
             this.tokenServices = tokenServices;
             this.logger = logger;
         }
@@ -41,9 +44,22 @@ namespace SchedulerAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    logger.LogWarning($"Invalid model state for login request: {ModelState}");
                     return BadRequest(ModelState);
                 }
-                var user = await UserDAO.GetInstance().GetUserByEmailAsync(request.Email);
+                var isUser = await authServices.LoginAsync(request.Email, request.Password);
+                if(!isUser)
+                {
+                    logger.LogWarning("Invalid login attempt for email: {Email}", request.Email);
+                    return Unauthorized("Invalid email or password");
+                }
+                var token = await tokenServices.GenerateTokenAsync(request.Email);
+                return Ok(new APIResponse
+                {
+                    Title = "Login successful",
+                    Message = "User authenticated successfully",
+                    Data = token
+                });
             }
             catch(Exception ex)
             {

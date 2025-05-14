@@ -4,27 +4,20 @@ namespace SchedulerAPI.Services
 {
     public class AuthServices : IAuthServices
     {
-        public async Task<string> LoginAsync(string email, string password)
+        public async Task<bool> LoginAsync(string email, string password)
         {
             try
             {
-                if (string.IsNullOrEmpty(email))
-                {
-                    return null;
-                }
                 var user = await UserDAO.GetInstance().GetUserByEmailAsync(email);
-                if(user == null)
+                if (!user.Email.Equals(email) && !user.Password.Equals(password))
                 {
-                    return null;
+                    return false;
                 }
-                if(user.Password == password)
-                {
-
-                }
+                return true;
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while processing the login request.", ex);
+                throw new Exception($"An error occurred while processing the login request: {ex.Message}", ex);
             }
         }
     }

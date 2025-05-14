@@ -7,7 +7,7 @@ namespace SchedulerAPI.DAO
     /// <summary>
     /// Data Access Object for User entity
     /// Implements the Singleton design pattern to ensure only one instance exists throughout the application
-    /// Provides methods to interact with User data in the database
+    /// Provides methods to interact with User data in the database using Entity Framework Core
     /// </summary>
     public class UserDAO
     {
@@ -231,9 +231,16 @@ namespace SchedulerAPI.DAO
             }
         }
 
+        /// <summary>
+        /// Retrieves a user by their email address (alternative method)
+        /// This is a duplicate of GetUserByEmailAsync with a different method name
+        /// </summary>
+        /// <param name="email">The email address to search for</param>
+        /// <returns>A task that represents the asynchronous operation, containing the found user or null if not found</returns>
+        /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task<User> GetUserByEmail(string email)
         {
-            using(var context = new SchedulerContext())
+            using (var context = new SchedulerContext())
             {
                 try
                 {
