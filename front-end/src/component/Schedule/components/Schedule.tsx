@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Select, MenuItem, Box, Grid, Typography } from "@mui/material";
+import { Select, MenuItem, Box, Typography } from "@mui/material";
 import TimetableList from "./TimetableList"; // <- Đường dẫn tới component của bạn
 import { Event, eventData } from "@/utils/data";
 
@@ -10,7 +10,7 @@ type WeekRange = {
   label: string;
 };
 
-// Hàm generate các tuần trong năm
+// Function to generate week ranges for a given year
 const generateWeekRanges = (year: number) => {
   const weeks: WeekRange[] = [];
   // const today = new Date();
@@ -58,7 +58,7 @@ const TimetableWithFilter = () => {
     weeksGenerate.currentWeek ? weeksGenerate.currentWeek : weeks[0]
   );
 
-  // Khi năm thay đổi thì generate lại danh sách tuần
+  // Regenerate week list whenever selected year changes
   useEffect(() => {
     const newWeeks = generateWeekRanges(selectedYear);
     setWeeks(newWeeks.weeks);
@@ -67,7 +67,7 @@ const TimetableWithFilter = () => {
     );
   }, [selectedYear]);
 
-  // Lọc sự kiện trong tuần đang chọn
+  // Filter events that fall within the selected week
   const filteredEvents: Event[] = eventData.filter((event) => {
     const eventDate = new Date(event.StartTime);
     return eventDate >= selectedWeek.start && eventDate <= selectedWeek.end;
@@ -75,59 +75,59 @@ const TimetableWithFilter = () => {
 
   return (
     <Box sx={{ p: 1, width: "100%" }}>
+      {/* Title section */}
       <Typography
         variant="h6"
         fontWeight="bold"
-        textAlign={"center"}
+        textAlign="center"
         fontSize={22}
       >
         Schedule for the week
       </Typography>
 
-      <Box
-        display="flex"
-        mb={2}
-        gap={2}
-        flexWrap="wrap"
-      >
-        <Box sx={{ minWidth: 80, maxWidth: 120 }}>
-          <Select
-            fullWidth
-            size="small"
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(Number(e.target.value))}
-          >
-            {Array.from({ length: 5 }, (_, i) => currentYear - 2 + i).map(
-              (year) => (
-                <MenuItem key={year} value={year}>
-                  {year}
+      <Box sx={{ pl: 4, pr: 4 }}>
+        <Box display="flex" mb={2} gap={2} flexWrap="wrap">
+          {/* Select year */}
+          <Box sx={{ minWidth: 80, maxWidth: 120 }}>
+            <Select
+              fullWidth
+              size="small"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+            >
+              {Array.from({ length: 5 }, (_, i) => currentYear - 2 + i).map(
+                (year) => (
+                  <MenuItem key={year} value={year}>
+                    {year}
+                  </MenuItem>
+                )
+              )}
+            </Select>
+          </Box>
+
+          {/* Select date */}
+          <Box sx={{ minWidth: 160, maxWidth: 220 }}>
+            <Select
+              fullWidth
+              size="small"
+              value={selectedWeek.label}
+              onChange={(e) => {
+                const w = weeks.find((w) => w.label === e.target.value);
+                if (w) setSelectedWeek(w);
+              }}
+            >
+              {weeks.map((week) => (
+                <MenuItem key={week.label} value={week.label}>
+                  {week.label}
                 </MenuItem>
-              )
-            )}
-          </Select>
+              ))}
+            </Select>
+          </Box>
         </Box>
 
-        <Box sx={{ minWidth: 160, maxWidth: 220 }}>
-          <Select
-            fullWidth
-            size="small"
-            value={selectedWeek.label}
-            onChange={(e) => {
-              const w = weeks.find((w) => w.label === e.target.value);
-              if (w) setSelectedWeek(w);
-            }}
-          >
-            {weeks.map((week) => (
-              <MenuItem key={week.label} value={week.label}>
-                {week.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
+        {/* Timetable show schedule by week selected */}
+        <TimetableList events={filteredEvents} startDate={selectedWeek.start} />
       </Box>
-
-      {/* Timetable hiển thị theo tuần được chọn */}
-      <TimetableList events={filteredEvents} startDate={selectedWeek.start} />
     </Box>
   );
 };

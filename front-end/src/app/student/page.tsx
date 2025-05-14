@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import ProtectedRoute from "@/context/ProtectedRoute";
 import Header from "@/component/Header/header";
 import { Schedule } from "@/component/Schedule";
 function Page() {

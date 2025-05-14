@@ -12,10 +12,9 @@ import {
   SeriesDirective,
   Tooltip,
 } from "@syncfusion/ej2-react-charts";
+import Header from "@/component/Header/header";
 
 registerSyncfusionLicense();
-
-
 
 function Page() {
   const data: object = [
@@ -28,6 +27,7 @@ function Page() {
   const primaryxAxis: { valueType: ValueType } = { valueType: "Category" };
   return (
     <ProtectedRoute allowedRoles={["teacher"]}>
+      <Header />
       <div className="min-h-screen bg-gray-100 p-8">
         <ChartComponent id="charts" primaryXAxis={primaryxAxis}>
           <Inject services={[ColumnSeries, Tooltip, LineSeries, Category]} />
@@ -40,7 +40,6 @@ function Page() {
             />
           </SeriesCollectionDirective>
         </ChartComponent>
-        
       </div>
     </ProtectedRoute>
   );
