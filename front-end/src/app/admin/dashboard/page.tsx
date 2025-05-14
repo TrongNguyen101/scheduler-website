@@ -4,6 +4,7 @@ import * as GetData from "@/api/exampleAPI";
 import IconLabelButtons from "@/component/button";
 
 import ProtectedRoute from "@/context/ProtectedRoute";
+import Header from "@/component/Header/header";
 
 interface Post {
   id: number;
@@ -34,6 +35,7 @@ function Dashboard() {
 
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
+      <Header />
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-blue-600 mb-4">Dashboard</h1>
