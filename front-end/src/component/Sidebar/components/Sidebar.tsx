@@ -33,39 +33,6 @@ const Sidebar = () => {
         },
       }}
     >
-      {/* Logo and App Title */}
-      {/* <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          p: 2,
-          mb: 1,
-        }}
-      >
-        <Avatar
-          sx={{
-            bgcolor: "primary.main",
-            width: 40,
-            height: 40,
-            mr: 2,
-            boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-          }}
-        >
-          S
-        </Avatar>
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: "bold",
-            background: "linear-gradient(90deg, #ba68c8, #7b1fa2)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          EduScheduler
-        </Typography>
-      </Box> */}
-
       <Divider sx={{ mx: 2, mb: 2 }} />
 
       {/* Main Navigation */}
@@ -97,23 +64,7 @@ const Sidebar = () => {
             <SidebarItem icon={<MeetingRoomIcon />} label="Rooms" nested />
           </List>
         </Collapse>
-
-        {/* <SidebarItem
-          icon={
-            <Badge badgeContent={3} color="error">
-              <NotificationsIcon color="action" />
-            </Badge>
-          }
-          label="Notifications"
-        /> */}
       </List>
-
-      {/* <Divider sx={{ mx: 2, mt: 2 }} /> */}
-
-      {/* Footer section with settings */}
-      {/* <Box sx={{ p: 2 }}>
-        <SidebarItem icon={<SettingsIcon />} label="Settings" sx={{ mb: 0 }} />
-      </Box> */}
     </Box>
   );
 };

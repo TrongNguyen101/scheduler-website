@@ -67,9 +67,6 @@ const TimetableListItem = ({ event }: TimetableListItemProps) => {
         <Typography variant="body2" color="text.secondary">
           Group class: {event.Class}
         </Typography>
-        {/* <Typography variant="body2" color="text.secondary">
-          Lecturer: {event.Lecturer}
-        </Typography> */}
         {event.IsOnline ? (
           <Grid
             variant="body2"
