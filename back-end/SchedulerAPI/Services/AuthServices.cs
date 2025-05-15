@@ -2,18 +2,33 @@
 
 namespace SchedulerAPI.Services
 {
+    /// <summary>
+    /// Provides authentication services for the application.
+    /// </summary>
     public class AuthServices : IAuthServices
     {
+        /// <summary>
+        /// Authenticates a user by email and password.
+        /// </summary>
+        /// <param name="email">User's email address</param>
+        /// <param name="password">User's password</param>
+        /// <returns>True if authentication is successful, otherwise false</returns>
+        /// <exception cref="Exception">Thrown when an error occurs during authentication</exception>
         public async Task<bool> LoginAsync(string email, string password)
         {
             try
             {
                 var user = await UserDAO.GetInstance().GetUserByEmailAsync(email);
-                if (!user.Email.Equals(email) && !user.Password.Equals(password))
+
+                // If user not found, return false
+                if (user == null)
                 {
                     return false;
                 }
-                return true;
+
+                // Check if both email and password match
+                // Note: In production, passwords should be hashed and compared securely
+                return user.Email.Equals(email) && user.Password.Equals(password);
             }
             catch (Exception ex)
             {
