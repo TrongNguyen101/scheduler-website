@@ -40,6 +40,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<SchedulerContext>();
 builder.Services.AddAutoMapper(typeof(AutoMappingProfiles));
 builder.Services.AddCors();
+builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddScoped<ITokenServices, TokenServices>();
 builder.Services.AddScoped<IUserServices, UserServicescs>();
 

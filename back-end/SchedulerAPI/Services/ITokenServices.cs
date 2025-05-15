@@ -2,6 +2,6 @@
 {
     public interface ITokenServices
     {
-        Task<string> GenerateToken(string email);
+        Task<string> GenerateTokenAsync(string email);
     }
 }

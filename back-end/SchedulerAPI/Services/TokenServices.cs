@@ -14,7 +14,7 @@ namespace SchedulerAPI.Services
         {
             this.configuration = configuration;
         }
-        public async Task<string> GenerateToken(string email)
+        public async Task<string> GenerateTokenAsync(string email)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
