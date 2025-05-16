@@ -41,17 +41,18 @@ namespace SchedulerAPI.Controllers
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateAccountUser([FromBody] CreateAccount accountUser)
         {
-            logger.LogInformation("Create account request received for email: {Email}", accountUser.Email);
+            var AuthenticatedEmail = User.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
+            logger.LogInformation("Create account request received for email: {Email}", AuthenticatedEmail);
             try
             {
                 if(!User.Identity.IsAuthenticated)
                 {
-                    logger.LogWarning("Unauthorized access attempt to create account for email: {Email}", accountUser.Email);
+                    logger.LogWarning("Unauthorized access attempt to create account for email: {Email}", AuthenticatedEmail);
                     return Unauthorized("User is not authenticated.");
                 }
                 if(!User.IsInRole("Admin"))
                 {
-                    logger.LogWarning("Unauthorized access attempt to create account for email: {Email}", accountUser.Email);
+                    logger.LogWarning("Unauthorized access attempt to create account for email: {Email}", AuthenticatedEmail);
                     return Forbid("User does not have admin privileges.");
                 }
                 if (!ModelState.IsValid)
