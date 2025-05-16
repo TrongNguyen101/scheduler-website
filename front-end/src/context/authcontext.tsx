@@ -38,9 +38,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = (token: string) => {
     const decoded: DecodedToken = jwtDecode(token);
-    if (decoded.role == "admin") {
-      router.push("/admin/dashboard"); // Redirect đến trang dashboard sau khi login thành công
-    } else if (decoded.role == "student") {
+    console.log(decoded);
+
+    if (decoded.role == "Admin") {
+      router.push("/admin/dashboard");
+    } else if (decoded.role == "User") {
       router.push("/student");
     } else if (decoded.role == "teacher") {
       router.push("/teacher");

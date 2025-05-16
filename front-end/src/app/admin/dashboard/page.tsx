@@ -34,7 +34,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <ProtectedRoute allowedRoles={["admin"]}>
+    <ProtectedRoute allowedRoles={["Admin"]}>
       <Header />
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto">

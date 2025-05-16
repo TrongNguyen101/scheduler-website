@@ -5,7 +5,7 @@ import { Schedule } from "@/component/Schedule";
 import ProtectedRoute from "@/context/ProtectedRoute";
 function Page() {
   return (
-    <ProtectedRoute allowedRoles={["student"]}>
+    <ProtectedRoute allowedRoles={["User"]}>
       <Header />
       <Schedule />
     </ProtectedRoute>

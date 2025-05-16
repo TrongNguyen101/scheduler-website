@@ -1,7 +1,5 @@
-import axios  from "axios";
+import axios from "axios";
 
 export const baseURL = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_API_PREFIX}`,
 });
-
-
