@@ -13,6 +13,8 @@ import {
   Tooltip,
 } from "@syncfusion/ej2-react-charts";
 import Header from "@/component/Header/header";
+import { Sidebar } from "@/component/Sidebar";
+import { Grid } from "@mui/material";
 
 registerSyncfusionLicense();
 
@@ -28,19 +30,23 @@ function Page() {
   return (
     <ProtectedRoute allowedRoles={["teacher"]}>
       <Header />
-      <div className="min-h-screen bg-gray-100 p-8">
-        <ChartComponent id="charts" primaryXAxis={primaryxAxis}>
-          <Inject services={[ColumnSeries, Tooltip, LineSeries, Category]} />
-          <SeriesCollectionDirective>
-            <SeriesDirective
-              dataSource={data}
-              xName="x"
-              yName="y"
-              name="Sales"
-            />
-          </SeriesCollectionDirective>
-        </ChartComponent>
-      </div>
+      <Grid display={"flex"} flexDirection={"row"} height={"100%"}>
+        <Sidebar />
+
+        <div className="min-h-screen  p-8">
+          <ChartComponent id="charts" primaryXAxis={primaryxAxis}>
+            <Inject services={[ColumnSeries, Tooltip, LineSeries, Category]} />
+            <SeriesCollectionDirective>
+              <SeriesDirective
+                dataSource={data}
+                xName="x"
+                yName="y"
+                name="Sales"
+              />
+            </SeriesCollectionDirective>
+          </ChartComponent>
+        </div>
+      </Grid>
     </ProtectedRoute>
   );
 }

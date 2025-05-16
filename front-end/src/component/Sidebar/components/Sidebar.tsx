@@ -1,72 +1,87 @@
-import { Box, List, Divider, Collapse } from "@mui/material";
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SchoolIcon from "@mui/icons-material/School";
 import PersonIcon from "@mui/icons-material/Person";
 import ClassIcon from "@mui/icons-material/Class";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { useState } from "react";
-import SidebarItem from "./SidebarItem";
 
-const Sidebar = () => {
-  const [openManagement, setOpenManagement] = useState(true);
+export default function Sidebar() {
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
-  const handleManagementClick = () => {
-    setOpenManagement(!openManagement);
+  const menuItems = [
+    { text: "Tổng quang", icon: <DashboardIcon /> },
+    { text: "Xếp lịch học", icon: <CalendarMonthIcon /> },
+    { text: "Quản lý học viên", icon: <SchoolIcon /> },
+    {
+      text: "Quản lý giảng viên",
+      icon: <PersonIcon />,
+      onClick: () => console.log("Show Teacher View"),
+    },
+    {
+      text: "Quản lý Con Người",
+      icon: <PersonIcon />,
+      onClick: () => console.log("Show Person View"),
+    },
+    {
+      text: "Quản lý môn học",
+      icon: <MenuBookIcon />,
+      onClick: () => console.log("Show Course View"),
+    },
+    {
+      text: "Quản lý phòng học",
+      icon: <MeetingRoomIcon />,
+      onClick: () => console.log("Show Room View"),
+    },
+    { text: "Quản Lí Lớp Học", icon: <ClassIcon /> },
+    { text: "Cài đặt", icon: <SettingsIcon /> },
+  ];
+
+  const handleListItemClick = (index: number) => {
+    setSelectedIndex(index);
+    if (menuItems[index].onClick) {
+      menuItems[index].onClick();
+    }
   };
 
   return (
     <Box
       sx={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: "#f8f9fa",
-        borderRight: "1px solid",
-        borderColor: "divider",
-        width: 240,
-        transition: "width 0.3s ease",
-        "&:hover": {
-          boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-        },
+        width: 250,
+        backgroundColor: "#F0F4F8",
+        borderRight: "1px solid #F0F4F8",
       }}
     >
-      <Divider sx={{ mx: 2, mb: 2 }} />
-
-      {/* Main Navigation */}
-      <List sx={{ px: 2, flex: 1 }}>
-        <SidebarItem
-          icon={<DashboardIcon color="primary" />}
-          label="Dashboard"
-        />
-        <SidebarItem
-          icon={<CalendarMonthIcon color="secondary" />}
-          label="Scheduler"
-          selected
-          sx={{ mb: 1 }}
-        />
-
-        {/* Management Section with Collapse */}
-        <SidebarItem
-          icon={<SchoolIcon color="primary" />}
-          label="Management"
-          endIcon={openManagement ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          onClick={handleManagementClick}
-        />
-
-        <Collapse in={openManagement} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <SidebarItem icon={<PersonIcon />} label="Students" nested />
-            <SidebarItem icon={<PersonIcon />} label="Teachers" nested />
-            <SidebarItem icon={<ClassIcon />} label="Classes" nested />
-            <SidebarItem icon={<MeetingRoomIcon />} label="Rooms" nested />
-          </List>
-        </Collapse>
-      </List>
+      <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+        <List sx={{ pt: 0 }}>
+          {menuItems.map((item, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton
+                selected={selectedIndex === index}
+                onClick={() => handleListItemClick(index)}
+                sx={{
+                  "&.Mui-selected": {
+                    borderRadius: "5px",
+                  },
+                }}
+              >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
     </Box>
   );
-};
-
-export default Sidebar;
+}
