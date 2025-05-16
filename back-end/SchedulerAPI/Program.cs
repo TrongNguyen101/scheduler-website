@@ -43,6 +43,7 @@ builder.Services.AddCors();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddScoped<ITokenServices, TokenServices>();
 builder.Services.AddScoped<IUserServices, UserServicescs>();
+builder.Services.AddScoped<IAdminServices, AdminServices>();
 
 var app = builder.Build();
 
