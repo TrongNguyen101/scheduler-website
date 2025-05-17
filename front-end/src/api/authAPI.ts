@@ -6,10 +6,10 @@ export const SignIn = async (path: string, email: string, password: string) => {
       email,
       password,
     });
-    console.log(response.status);
-    
+    console.log(response);
     return response;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SignIn } from "@/api/authAPI";
 import { useAuth } from "@/context/authcontext"; // import context
+import FormCreateUser from "@/component/Form/FormCreateUser";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,6 +16,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth(); // lấy hàm login từ context
 
@@ -24,28 +27,28 @@ export default function LoginPage() {
 
     // Validate form
     if (!email || !password) {
-      setError("Vui lòng nhập đầy đủ thông tin đăng nhập.");
+      setEmailError("Vui lòng nhập email.");
+      setPasswordError("Vui lòng nhập mật khẩu.");
       return;
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError("Email không hợp lệ.");
+      setEmailError("Email không hợp lệ.");
       return;
     }
-
     setLoading(true);
 
     try {
       // Using NextAuth for authentication
       const result = await SignIn("/auth/login", email, password);
-      console.log(result);
+      console.log(result.response.data.errors.Email[0]);
 
       if (result?.status === 200) {
         login(result.data.data);
-      } else {
-        setError("Thông tin đăng nhập không chính xác.");
+      } else if (result?.status === 400) {
+        setError(result.response.data.errors.Email[0]);
         setLoading(false);
         return;
       }
@@ -104,15 +107,17 @@ export default function LoginPage() {
                 <input
                   id="email"
                   name="email"
-                  type="email"
+                  // type="email"
                   autoComplete="email"
-                  required
                   className="appearance-none block w-full h-12 pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="email@university.edu.vn"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
+              {emailError && (
+                <p className="mt-1 text-sm text-red-600">{emailError}</p>
+              )}
             </div>
 
             <div>
@@ -131,7 +136,6 @@ export default function LoginPage() {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
-                  required
                   className="appearance-none block w-full h-12 pl-10 pr-10 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="••••••••"
                   value={password}
@@ -152,6 +156,9 @@ export default function LoginPage() {
                 </div>
               </div>
             </div>
+            {passwordError && (
+              <p className="mt-1 text-sm text-red-600">{passwordError}</p>
+            )}
           </div>
 
           <div className="flex items-center justify-between">
@@ -205,7 +212,7 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      {/* <FormCreateUser /> */}
+      <FormCreateUser />
     </div>
   );
 }
