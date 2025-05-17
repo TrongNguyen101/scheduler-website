@@ -4,15 +4,16 @@ namespace SchedulerAPI.DTO
 {
     public class CreateAccount
     {
-        [Required]
-        public string? FullName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Fullname is required")]
+        public string? Name { get; set; }
+        [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
         public string? Email { get; set; }
-        [Required]
-        [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
-        [MaxLength(20, ErrorMessage = "Password cannot exceed 20 characters")]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])(?!.*\s).{8,20}$", ErrorMessage = "")]
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(20, MinimumLength = 8,
+        ErrorMessage = "Password must be between 8 and 20 characters")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])(?!.*\s).{8,20}$", 
+        ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, and one digit")]
         public string? Password { get; set; }
         [Required]
         public string? Role { get; set; }

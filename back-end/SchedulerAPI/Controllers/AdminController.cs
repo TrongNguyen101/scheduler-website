@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SchedulerAPI.DTO;
 using SchedulerAPI.Services;
@@ -11,6 +12,7 @@ namespace SchedulerAPI.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AdminController : ControllerBase
     {
         private readonly IAdminServices adminServices;
@@ -38,23 +40,13 @@ namespace SchedulerAPI.Controllers
         /// 500 Internal Server Error - If an exception occurs during processing
         /// </returns>
         [HttpPost("Account/Create/User")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateAccountUser([FromBody] CreateAccount accountUser)
         {
-            var AuthenticatedEmail = User.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
-            logger.LogInformation("Create account request received for email: {Email}", AuthenticatedEmail);
+            var AuthenticatedEmail = User.FindFirstValue(ClaimTypes.Email);
+            logger.LogInformation($"Create account request received by email admin: {AuthenticatedEmail}");
             try
             {
-                if(!User.Identity.IsAuthenticated)
-                {
-                    logger.LogWarning("Unauthorized access attempt to create account for email: {Email}", AuthenticatedEmail);
-                    return Unauthorized("User is not authenticated.");
-                }
-                if(!User.IsInRole("Admin"))
-                {
-                    logger.LogWarning("Unauthorized access attempt to create account for email: {Email}", AuthenticatedEmail);
-                    return Forbid("User does not have admin privileges.");
-                }
                 if (!ModelState.IsValid)
                 {
                     logger.LogWarning($"Invalid model state for create account request: {ModelState}");
@@ -63,12 +55,12 @@ namespace SchedulerAPI.Controllers
                 var result = await adminServices.CreateUserAccountAsync(accountUser);
                 if (result)
                 {
-                    logger.LogInformation("Account created successfully for email: {Email}", accountUser.Email);
+                    logger.LogInformation($"Account created successfully by admin email: {AuthenticatedEmail}");
                     return Ok("Account created successfully.");
                 }
                 else
                 {
-                    logger.LogWarning("Failed to create account for email: {Email}", accountUser.Email);
+                    logger.LogWarning($"Failed to create account by admin email: {AuthenticatedEmail}");
                     return BadRequest("Failed to create account.");
                 }
             }

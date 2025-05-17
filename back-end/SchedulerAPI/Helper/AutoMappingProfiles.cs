@@ -13,11 +13,11 @@ namespace SchedulerAPI.Helper
         {
             // Create mappings User and UserDTO
             CreateMap<User, UserDTO>();
-            CreateMap<User, CreateAccount>();
 
             // Create mappings UserDTO and User
             CreateMap<UserDTO, User>();
             CreateMap<AddUserDTO, User>();
+            CreateMap<CreateAccount, User>();
 
         }
     }
