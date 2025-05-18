@@ -2,6 +2,7 @@
 using SchedulerAPI.DAO;
 using SchedulerAPI.DTO;
 using SchedulerAPI.Model;
+using SchedulerAPI.Repository;
 
 namespace SchedulerAPI.Services
 {
@@ -12,6 +13,13 @@ namespace SchedulerAPI.Services
     public class UserServicescs : IUserServices
     {
         private readonly IMapper mapperData;
+        private readonly IUserRepository userRepository;
+
+        public UserServicescs(IUserRepository userRepository, IMapper mapperData)
+        {
+            this.userRepository = userRepository;
+            this.mapperData = mapperData;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserServicescs"/> class.
@@ -28,7 +36,7 @@ namespace SchedulerAPI.Services
         /// <returns>A list of UserDTO objects containing user information, or null if no users found.</returns>
         public async Task<List<UserDTO>> ListAllUser()
         {
-            var data = await UserDAO.GetInstance().GetAllUsers();
+            var data = await userRepository.GetAllUsers();
             if (data == null || !data.Any())
             {
                 return null;
@@ -47,7 +55,7 @@ namespace SchedulerAPI.Services
         /// <returns>A UserDTO containing the user's information, or null if not found.</returns>
         public async Task<UserDTO> GetUserByIdAsync(int id)
         {
-            var user = await UserDAO.GetInstance().GetUserById(id);
+            var user = await userRepository.GetUserById(id);
             if (user == null)
             {
                 return null;
@@ -70,9 +78,9 @@ namespace SchedulerAPI.Services
         /// </remarks>
         public async Task AddUserAsync(AddUserDTO userDTO)
         {
-            var existingUser = await UserDAO.GetInstance().GetUserByEmailAsync(userDTO.Email);
+            var existingUser = await userRepository.GetUserByEmailAsync(userDTO.Email);
             var user = mapperData.Map<User>(userDTO);
-            await UserDAO.GetInstance().AddUserAsync(user);
+            await userRepository.AddUserAsync(user);
         }
 
         /// <summary>
@@ -83,7 +91,7 @@ namespace SchedulerAPI.Services
         public Task UpdateUserAsync(UserDTO userDTO)
         {
             var user = mapperData.Map<User>(userDTO);
-            return UserDAO.GetInstance().UpdateUserAsync(user);
+            return userRepository.UpdateUserAsync(user);
         }
 
         /// <summary>
@@ -93,12 +101,12 @@ namespace SchedulerAPI.Services
         /// <returns>A task representing the asynchronous operation.</returns>
         public Task DeleteUserAsync(int id)
         {
-            return UserDAO.GetInstance().DeleteUserAsync(id);
+            return userRepository.DeleteUserAsync(id);
         }
 
         public async Task<string> GetRoleByEmail(string email)
         {
-            var user = await UserDAO.GetInstance().GetUserByEmailAsync(email);
+            var user = await userRepository.GetUserByEmailAsync(email);
             if (user == null)
             {
                 return null;

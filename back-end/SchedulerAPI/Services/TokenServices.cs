@@ -1,25 +1,26 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
-using SchedulerAPI.DAO;
+using SchedulerAPI.Repository;
 
 namespace SchedulerAPI.Services
 {
     public class TokenServices : ITokenServices
     {
         private readonly IConfiguration configuration;
-        public TokenServices(IConfiguration configuration)
+        private readonly IUserRepository userRepository;
+        public TokenServices(IConfiguration configuration, IUserRepository userRepository)
         {
             this.configuration = configuration;
+            this.userRepository = userRepository;
         }
         public async Task<string> GenerateTokenAsync(string email)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expiryInMinutes = int.Parse(configuration["Jwt:ExpiryInMinutes"]);
-            var role = await UserDAO.GetInstance().GetRoleByEmail(email);
+            var role = await userRepository.GetRoleByEmail(email);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
