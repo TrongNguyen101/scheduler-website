@@ -5,6 +5,8 @@ using SchedulerAPI.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using SchedulerAPI.Repository;
+using SchedulerAPI.DAO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +67,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<SchedulerContext>();
 builder.Services.AddAutoMapper(typeof(AutoMappingProfiles));
 builder.Services.AddCors();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddScoped<ITokenServices, TokenServices>();
 builder.Services.AddScoped<IUserServices, UserServicescs>();

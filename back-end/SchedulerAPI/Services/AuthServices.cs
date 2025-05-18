@@ -1,4 +1,5 @@
 ﻿using SchedulerAPI.DAO;
+using SchedulerAPI.Repository;
 
 namespace SchedulerAPI.Services
 {
@@ -7,6 +8,11 @@ namespace SchedulerAPI.Services
     /// </summary>
     public class AuthServices : IAuthServices
     {
+        private readonly IUserRepository userRepository;
+        public AuthServices(IUserRepository userRepository)
+        {
+            this.userRepository = userRepository;
+        }
         /// <summary>
         /// Authenticates a user by email and password.
         /// </summary>
@@ -18,7 +24,7 @@ namespace SchedulerAPI.Services
         {
             try
             {
-                var user = await UserDAO.GetInstance().GetUserByEmailAsync(email);
+                var user = await userRepository.GetUserByEmailAsync(email);
 
                 // If user not found, return false
                 if (user == null)

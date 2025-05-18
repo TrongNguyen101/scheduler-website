@@ -2,6 +2,7 @@
 using SchedulerAPI.DAO;
 using SchedulerAPI.DTO;
 using SchedulerAPI.Model;
+using SchedulerAPI.Repository;
 
 namespace SchedulerAPI.Services
 {
@@ -11,14 +12,16 @@ namespace SchedulerAPI.Services
     public class AdminServices : IAdminServices
     {
         private readonly IMapper mapper;
+        private readonly IUserRepository userRepository;
 
         /// <summary>
         /// Constructor for AdminServices
         /// </summary>
         /// <param name="mapper">AutoMapper instance for object mapping</param>
-        public AdminServices(IMapper mapper)
+        public AdminServices(IMapper mapper, IUserRepository userRepository)
         {
             this.mapper = mapper;
+            this.userRepository = userRepository;
         }
 
         /// <summary>
@@ -37,7 +40,7 @@ namespace SchedulerAPI.Services
                 }
 
                 // Check if a user with the same email already exists
-                var isAccountExists = await UserDAO.GetInstance().GetUserByEmailAsync(accountUser.Email);
+                var isAccountExists = await userRepository.GetUserByEmailAsync(accountUser.Email);
                 if (isAccountExists != null)
                 {
                     return false;
@@ -45,7 +48,7 @@ namespace SchedulerAPI.Services
 
                 // Map DTO to entity model and save to database
                 var user = mapper.Map<User>(accountUser);
-                await UserDAO.GetInstance().AddUserAsync(user);
+                await userRepository.AddUserAsync(user);
                 return true;
             }
             catch (Exception ex)
