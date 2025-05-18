@@ -7,28 +7,39 @@ using SchedulerAPI.Repository;
 namespace SchedulerAPI.Services
 {
     /// <summary>
-    /// Service class that handles administrative operations
+    /// Service class that handles administrative operations related to user management
     /// </summary>
     public class AdminServices : IAdminServices
     {
+        #region Fields
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
+        #endregion
 
+        #region Contructor
         /// <summary>
         /// Constructor for AdminServices
         /// </summary>
         /// <param name="mapper">AutoMapper instance for object mapping</param>
+        /// <param name="userRepository">Repository for user data operations</param>
         public AdminServices(IMapper mapper, IUserRepository userRepository)
         {
             this.mapper = mapper;
             this.userRepository = userRepository;
         }
+        #endregion
 
+        #region Methods
         /// <summary>
-        /// Creates a new user account
+        /// Creates a new user account in the system
         /// </summary>
-        /// <param name="accountUser">Account creation request data</param>
+        /// <param name="accountUser">Account creation request data containing user details</param>
         /// <returns>True if account creation was successful, false otherwise</returns>
+        /// <remarks>
+        /// This method performs the following validations:
+        /// - Checks if email and password are provided
+        /// - Verifies that no existing user has the same email
+        /// </remarks>
         public async Task<bool> CreateUserAccountAsync(CreateAccount accountUser)
         {
             try
@@ -36,6 +47,7 @@ namespace SchedulerAPI.Services
                 // Validate that essential fields are provided
                 if (string.IsNullOrEmpty(accountUser.Email) || string.IsNullOrEmpty(accountUser.Password))
                 {
+                    // Required data is missing
                     return false;
                 }
 
@@ -43,6 +55,7 @@ namespace SchedulerAPI.Services
                 var isAccountExists = await userRepository.GetUserByEmailAsync(accountUser.Email);
                 if (isAccountExists != null)
                 {
+                    // Email is already in use
                     return false;
                 }
 
@@ -53,9 +66,10 @@ namespace SchedulerAPI.Services
             }
             catch (Exception ex)
             {
-                // Rethrow with more context
-                throw new Exception($"An error occurred while processing the login request: {ex.Message}", ex);
+                // Rethrow with more context specific to account creation
+                throw new Exception($"An error occurred while creating the user account: {ex.Message}", ex);
             }
         }
+        #endregion
     }
 }
