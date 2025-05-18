@@ -52,6 +52,7 @@ namespace SchedulerAPI.Controllers
                     logger.LogWarning($"Invalid model state for create account request: {ModelState}");
                     return BadRequest(ModelState);
                 }
+                accountUser.CreateByEmail = AuthenticatedEmail;
                 var result = await adminServices.CreateUserAccountAsync(accountUser);
                 if (result)
                 {

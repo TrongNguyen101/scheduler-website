@@ -17,5 +17,6 @@ namespace SchedulerAPI.DTO
         public string? Password { get; set; }
         [Required]
         public string? Role { get; set; }
+        public string? CreateByEmail { get; set; }
     }
 }
