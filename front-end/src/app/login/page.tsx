@@ -20,43 +20,54 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     // Validate form
     if (!email && !password) {
       setEmailError("Vui lòng nhập email.");
       setPasswordError("Vui lòng nhập mật khẩu.");
+      setLoading(false);
+
       return;
     } else if (!email) {
       setEmailError("Vui lòng nhập email.");
       setPasswordError("");
+      setLoading(false);
+
       return;
     } else if (!password) {
       setEmailError("");
       setPasswordError("Vui lòng nhập mật khẩu.");
+      setLoading(false);
+
       return;
     }
     const checkemail = Validation.isValidEmail(email);
     if (!checkemail) {
       setEmailError("Email không hợp lệ");
       setLoading(false);
+      return;
     } else {
       setEmailError("");
       setPasswordError("");
     }
-
     try {
       const result = await SignIn("/auth/login", email, password);
       console.log(result);
-
       if (result.status === 200) {
         login(result.data.data);
+        setLoading(false);
       } else if (result.status === 401) {
-        setError(result.response.data);
+        console.log(result.response.data);
+        setError(result.response.data.message);
         setLoading(false);
         return;
+      } else {
+        setError("Server đang bảo trì hoặc xảy ra lỗi vui lòng thử lại sau");
+        console.log(result.data.message);
+        setLoading(false);
       }
     } catch (err) {
-      console.error("Login error:", err);
-      setError("Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau.");
+      console.error(err);
       setLoading(false);
     }
   };
@@ -72,7 +83,7 @@ export default function LoginPage() {
                 src="/logo.png"
                 alt="University Logo"
                 width={170}
-                height={1}
+                height={60}
               />
             </div>
           </div>

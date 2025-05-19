@@ -69,7 +69,11 @@ namespace SchedulerAPI.Controllers
                 if (!isUser)
                 {
                     logger.LogWarning("Invalid login attempt for email: {Email}", request.Email);
-                    return Unauthorized("Invalid email or password");
+                    return Unauthorized(new APIResponse
+                    {
+                        Title = "Login fail",
+                        Message = "User authenticated fail",
+                    });
                 }
 
                 // Generate JWT token for authenticated user
