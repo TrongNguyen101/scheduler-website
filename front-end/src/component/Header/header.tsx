@@ -1,19 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import {
-  Bell,
-  ChevronDown,
-  CalendarDays,
-  Users,
-  UserCircle,
-  BookOpen,
-  LayoutGrid,
-} from "lucide-react";
+import { Bell, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ReactNode } from "react";
 
-export default function Header() {
+export default function Header({ children }: { children?: ReactNode }) {
   const [isUserSectionOpen, setIsUserSectionOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState("Schedule");
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -25,15 +17,6 @@ export default function Header() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // Navigation menu items with icons
-  const navItemsPDT = [
-    { name: "Schedule", icon: <CalendarDays size={18} />, path: "/schedule" },
-    { name: "Class", icon: <Users size={18} />, path: "/class" },
-    { name: "Student", icon: <UserCircle size={18} />, path: "/student" },
-    { name: "Lecture", icon: <BookOpen size={18} />, path: "/lecture" },
-    { name: "Room", icon: <LayoutGrid size={18} />, path: "/room" },
-  ];
 
   return (
     <header className="bg-gradient-to-r from-blue-50 via-white to-indigo-50 shadow-md w-full">
@@ -50,40 +33,11 @@ export default function Header() {
                 className="mr-3"
                 priority
               />
-
-              {/* Text shown only on medium screens and above */}
-              <div className="pt-2 hidden xl:block">
-                <h1 className="text-md font-bold text-black">
-                  Trường Đại học FPT
-                </h1>
-                <p className="text-gray-500 text-sm">
-                  Tri thức - Sáng tạo - Thành công
-                </p>
-              </div>
             </Link>
           </div>
 
           {/* Navigation Menu */}
-          <nav className="hidden md:flex items-center">
-            <ul className="flex space-x-1">
-              {navItemsPDT.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.path}
-                    className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-                      activeItem === item.name
-                        ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white"
-                        : "text-gray-700 hover:bg-blue-50"
-                    }`}
-                    onClick={() => setActiveItem(item.name)}
-                  >
-                    <span className="mr-2">{item.icon}</span>
-                    <span className="font-medium">{item.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {children}
 
           <div className="flex items-center space-x-4" ref={dropdownRef}>
             {/* Notifications */}
@@ -175,27 +129,6 @@ export default function Header() {
               </div>
             )}
           </div>
-        </div>
-      </div>
-
-      {/* Mobile Navigation Menu (hidden by default) */}
-      <div className="md:hidden border-t border-indigo-100">
-        <div className="grid grid-cols-5 text-xs">
-          {navItemsPDT.map((item) => (
-            <a
-              key={item.name}
-              href="#"
-              className={`flex flex-col items-center justify-center py-3 ${
-                activeItem === item.name
-                  ? "text-indigo-600 font-medium"
-                  : "text-gray-600"
-              }`}
-              onClick={() => setActiveItem(item.name)}
-            >
-              {item.icon}
-              <span className="mt-1">{item.name}</span>
-            </a>
-          ))}
         </div>
       </div>
     </header>

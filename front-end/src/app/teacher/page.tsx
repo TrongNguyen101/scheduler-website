@@ -12,9 +12,9 @@ import {
   SeriesDirective,
   Tooltip,
 } from "@syncfusion/ej2-react-charts";
-import Header from "@/component/Header/header";
-import { Sidebar } from "@/component/Sidebar";
 import { Grid } from "@mui/material";
+import DefaultLayout from "@/component/DefaultLayout/DefaultLayout";
+import { Schedule } from "@/component/Schedule";
 
 registerSyncfusionLicense();
 
@@ -28,26 +28,28 @@ function Page() {
 
   const primaryxAxis: { valueType: ValueType } = { valueType: "Category" };
   return (
-    <ProtectedRoute allowedRoles={["teacher"]}>
-      <Header />
-      <Grid display={"flex"} flexDirection={"row"} height={"100%"}>
-        <Sidebar />
-
-        <div className="min-h-screen  p-8">
-          <ChartComponent id="charts" primaryXAxis={primaryxAxis}>
-            <Inject services={[ColumnSeries, Tooltip, LineSeries, Category]} />
-            <SeriesCollectionDirective>
-              <SeriesDirective
-                dataSource={data}
-                xName="x"
-                yName="y"
-                name="Sales"
+    <>
+      <DefaultLayout>
+        <Grid display={"flex"} flexDirection={"column"} height={"100%"}>
+          <Schedule />
+          <div className="min-h-screen  p-8">
+            <ChartComponent id="charts" primaryXAxis={primaryxAxis}>
+              <Inject
+                services={[ColumnSeries, Tooltip, LineSeries, Category]}
               />
-            </SeriesCollectionDirective>
-          </ChartComponent>
-        </div>
-      </Grid>
-    </ProtectedRoute>
+              <SeriesCollectionDirective>
+                <SeriesDirective
+                  dataSource={data}
+                  xName="x"
+                  yName="y"
+                  name="Sales"
+                />
+              </SeriesCollectionDirective>
+            </ChartComponent>
+          </div>
+        </Grid>
+      </DefaultLayout>
+    </>
   );
 }
 
