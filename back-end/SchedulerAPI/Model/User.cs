@@ -17,5 +17,7 @@ namespace SchedulerAPI.Model
         public string? Password { get; set; }
         [Column("Role")]
         public string? Role { get; set; }
+        [Column("CreateByEmail")]
+        public string? CreateByEmail { get; set; }
     }
 }

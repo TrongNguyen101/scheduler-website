@@ -59,16 +59,18 @@ namespace SchedulerAPI.DataContext
                 Id = 1,
                 Name = "John Doe",
                 Email = "john.example@gmail.com",
-                Password = "password@123",
-                Role = "Admin"
+                Password = "Password@123",
+                Role = "Admin",
+                CreateByEmail = null,
             },
             new User
             {
                 Id = 2,
                 Name = "Jane Smith",
                 Email = "jane.example@gmail.com",
-                Password = "password@123",
-                Role = "User"
+                Password = "Password@123",
+                Role = "Lecturer",
+                CreateByEmail = "john.example@gmail.com"
             });
         }
     }
