@@ -269,7 +269,7 @@ DragAndDrop,
 } from "@syncfusion/ej2-react-schedule";
 ```
 **Note**:
-- ~When using, you must call the function `registerSyncfusionLicense()` in the file:~
+- When using, you must call the function `registerSyncfusionLicense()` in the file
 
 ```
 /component/registerLicense.ts
