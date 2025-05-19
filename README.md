@@ -273,7 +273,6 @@ DragAndDrop,
 
 ```
 /component/registerLicense.ts
-
 ```
 - This function will automatically get the key from the environment variable to activate the license.
 
