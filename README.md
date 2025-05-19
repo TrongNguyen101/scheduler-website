@@ -1,7 +1,7 @@
 # Scheduler-Website
 
 ## Introduction
-The Timetable Management System is a comprehensive web platform developed to support educational institutions, faculty members, and students in the effective organization, administration, and retrieval of academic schedules. With an intuitive and user-friendly interface, the system facilitates the management of student and teacher information, the allocation of class sessions and teaching assignments, as well as the efficient lookup of timetables. Additionally, it incorporates advanced features aimed at optimizing scheduling workflows to ensure maximum productivity and minimal conflicts.
+The Timetable Management System is a powerful and user-friendly web-based platform designed to help schools, lecturers, and students efficiently organize, manage, and access their schedules. With a clean and intuitive interface, the system simplifies key tasks such as managing student and teacher information, assigning classes and teaching sessions, organizing classrooms, and viewing timetables with ease, etc. Additionally, it includes smart scheduling features that help optimize timetables, improve productivity, and reduce conflicts.
 ## Tech Stack
 ##### The Scheduler-Website is built using the following technologies:
 - **Frontend**: React.js

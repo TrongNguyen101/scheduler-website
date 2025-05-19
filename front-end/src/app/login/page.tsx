@@ -3,14 +3,12 @@ import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-// import { signIn } from 'next-auth/react';
-import { useRouter } from "next/navigation";
 import { SignIn } from "@/api/authAPI";
 import { useAuth } from "@/context/authcontext"; // import context
+import * as Validation from "@/helper/vadilationHelper";
 import FormCreateUser from "@/component/Form/FormCreateUser";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,35 +18,40 @@ export default function LoginPage() {
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth(); // lấy hàm login từ context
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
     // Validate form
-    if (!email || !password) {
+    if (!email && !password) {
       setEmailError("Vui lòng nhập email.");
       setPasswordError("Vui lòng nhập mật khẩu.");
       return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmailError("Email không hợp lệ.");
+    } else if (!email) {
+      setEmailError("Vui lòng nhập email.");
+      setPasswordError("");
+      return;
+    } else if (!password) {
+      setEmailError("");
+      setPasswordError("Vui lòng nhập mật khẩu.");
       return;
     }
-    setLoading(true);
+    const checkemail = Validation.isValidEmail(email);
+    if (!checkemail) {
+      setEmailError("Email không hợp lệ");
+      setLoading(false);
+    } else {
+      setEmailError("");
+      setPasswordError("");
+    }
 
     try {
-      // Using NextAuth for authentication
       const result = await SignIn("/auth/login", email, password);
-      console.log(result.response.data.errors.Email[0]);
+      console.log(result);
 
-      if (result?.status === 200) {
+      if (result.status === 200) {
         login(result.data.data);
-      } else if (result?.status === 400) {
-        setError(result.response.data.errors.Email[0]);
+      } else if (result.status === 401) {
+        setError(result.response.data);
         setLoading(false);
         return;
       }
@@ -108,7 +111,6 @@ export default function LoginPage() {
                   <input
                     id="email"
                     name="email"
-                    // type="email"
                     autoComplete="email"
                     className="appearance-none block w-full h-12 pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="email@university.edu.vn"
@@ -118,8 +120,8 @@ export default function LoginPage() {
                 </div>
               </div>
             </div>
-            {passwordError && (
-              <p className="mt-1 text-sm text-red-600">{passwordError}</p>
+            {emailError && (
+              <p className="mt-1 text-sm text-red-600">{emailError}</p>
             )}
             <div>
               <label
@@ -204,7 +206,6 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
-
         {/* Footer */}
         <div className="pt-4 text-center">
           <p className="text-xs text-gray-500">
@@ -213,7 +214,6 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      {/* <FormCreateUser /> */}
     </div>
   );
 }
