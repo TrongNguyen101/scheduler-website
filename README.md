@@ -36,30 +36,30 @@
 ---
 
 ### 4. `Helper/`
-- **Purpose**: contains AutoMapper to map data from DTO and corresponding model
+- **Purpose**: Contains AutoMapper to map data from DTO and corresponding model
 ---
 
 ### 5. `Migrations/`
-- **Purpose**: creates and updates database
+- **Purpose**: Creates and updates database
 ---
 
 ### 6. `Model/`
-- **Purpose**: contains properties of tables
+- **Purpose**: Contains properties of tables
 ---
 
 ### 7. `Repository/`
-- **Purpose**: contains CRUD methods (Create, Read, Update, Delete) for tables
+- **Purpose**: Contains methods query database 
 ---
 
-### 8. `services/`
-- **Purpose**: contains service functions and corresponding interfaces
+### 8. `Services/`
+- **Purpose**: Contains CRUD methods(create,update,read,delete)
 ---
 
-### 8. `Program/`
-- **Purpose**: contains initialization and configuration methods for the application
+### 9. `Program/`
+- **Purpose**: Contains initialization and configuration methods for the application
 ---
 
-### 9. `.appsettings.json`
+### 10. `.appsettings.json`
 - **Purpose usage**:
 Contains environment variables such as:
 - `ConnectionStrings`: Syncfusion license key.

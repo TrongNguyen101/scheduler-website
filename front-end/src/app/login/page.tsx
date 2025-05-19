@@ -212,7 +212,7 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      <FormCreateUser />
+      {/* <FormCreateUser /> */}
     </div>
   );
 }
