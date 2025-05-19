@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SchedulerAPI.DTO;
 using SchedulerAPI.Services;
 
@@ -11,10 +12,13 @@ namespace SchedulerAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        #region Fields
         private readonly ITokenServices tokenServices;   // Service for JWT token generation
         private readonly IAuthServices authServices;     // Service for user authentication
         private readonly ILogger<AuthController> logger; // Logger for capturing authentication events
+        #endregion
 
+        #region Constructor
         /// <summary>
         /// Constructor - initializes the controller with required service dependencies
         /// </summary>
@@ -29,7 +33,9 @@ namespace SchedulerAPI.Controllers
             this.tokenServices = tokenServices;
             this.logger = logger;
         }
+        #endregion
 
+        #region Methods
         /// <summary>
         /// Authenticates a user and generates an authentication token
         /// </summary>
@@ -40,6 +46,7 @@ namespace SchedulerAPI.Controllers
         /// 401 Unauthorized if credentials are invalid
         /// </returns>
         [HttpPost("Login")]
+        [AllowAnonymous] // Allow anonymous access to the login endpoint
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             // Log the login attempt (sensitive operation)
@@ -83,5 +90,6 @@ namespace SchedulerAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
             }
         }
+        #endregion
     }
 }

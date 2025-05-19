@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchedulerAPI.DataContext;
 using SchedulerAPI.Model;
+using SchedulerAPI.Repository;
 
 namespace SchedulerAPI.DAO
 {
@@ -9,46 +10,8 @@ namespace SchedulerAPI.DAO
     /// Implements the Singleton design pattern to ensure only one instance exists throughout the application
     /// Provides methods to interact with User data in the database using Entity Framework Core
     /// </summary>
-    public class UserDAO
+    public class UserRepository : IUserRepository
     {
-        #region Singleton Design Pattern
-        /// <summary>
-        /// Volatile instance ensures thread safety for double-check locking pattern
-        /// The volatile keyword prevents compiler optimizations that could make the double-check fail
-        /// </summary>
-        public static volatile UserDAO Instance;
-
-        /// <summary>
-        /// Lock object for thread synchronization when creating the singleton instance
-        /// Used to prevent multiple threads from creating instances simultaneously
-        /// </summary>
-        public static readonly object lockObject = new object();
-
-        /// <summary>
-        /// Gets the singleton instance of UserDAO
-        /// Implements double-checked locking pattern for thread safety and performance
-        /// First check outside lock for performance, second check inside lock for thread safety
-        /// </summary>
-        /// <returns>The singleton instance of UserDAO</returns>
-        public static UserDAO GetInstance()
-        {
-            // First check (not thread-safe but fast)
-            if (Instance == null)
-            {
-                // Lock for thread safety
-                lock (lockObject)
-                {
-                    // Second check (thread-safe)
-                    if (Instance == null)
-                    {
-                        Instance = new UserDAO();
-                    }
-                }
-            }
-            return Instance;
-        }
-        #endregion
-
         #region Methods
         /// <summary>
         /// Retrieves all users from the database

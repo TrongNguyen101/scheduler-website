@@ -17,6 +17,7 @@ namespace SchedulerAPI.Helper
             // Create mappings UserDTO and User
             CreateMap<UserDTO, User>();
             CreateMap<AddUserDTO, User>();
+            CreateMap<CreateAccount, User>();
 
         }
     }
