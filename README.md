@@ -1,7 +1,7 @@
 # Scheduler-Website
 
 ## Introduction
-### 
+The Timetable Management System is a comprehensive web platform developed to support educational institutions, faculty members, and students in the effective organization, administration, and retrieval of academic schedules. With an intuitive and user-friendly interface, the system facilitates the management of student and teacher information, the allocation of class sessions and teaching assignments, as well as the efficient lookup of timetables. Additionally, it incorporates advanced features aimed at optimizing scheduling workflows to ensure maximum productivity and minimal conflicts.
 ## Tech Stack
 ##### The Scheduler-Website is built using the following technologies:
 - **Frontend**: React.js
@@ -268,23 +268,23 @@ Inject,
 DragAndDrop,
 } from "@syncfusion/ej2-react-schedule";
 ```
-- **Note**:
-- When using, you must call the function `registerSyncfusionLicense()` in the file:
+**Note**:
+- ~When using, you must call the function `registerSyncfusionLicense()` in the file:~
 
 ```
 /component/registerLicense.ts
 ```
 - This function will automatically get the key from the environment variable to activate the license.
 
-- **Custom**:
+**Custom**:
 - You can customize the interface and functionality by changing the `props` passed to the component.
 
 ---
 
 ### 3. Tailwind CSS
-- **Purpose of use**: Set up the overall UI for the website (utility-first CSS framework).
+**Purpose of use**: Set up the overall UI for the website (utility-first CSS framework).
 
-- **Configuration**:
+**Configuration**:
 - Already configured in the file:
 
 ```
