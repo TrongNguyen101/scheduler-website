@@ -97,6 +97,7 @@ export default function Sidebar() {
 
   return (
     <>
+      {/* Nút mở drawer chỉ hiển thị ở mobile */}
       {isMobile && !mobileOpen && (
         <Box position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
           <Toolbar>
@@ -111,7 +112,7 @@ export default function Sidebar() {
         </Box>
       )}
 
-      {/* Drawer for mobile */}
+      {/* Drawer cho mobile */}
       <Drawer
         variant="temporary"
         open={mobileOpen}
@@ -130,42 +131,19 @@ export default function Sidebar() {
         {drawer}
       </Drawer>
 
-      <Box
-        sx={{
-          width: 250,
-          backgroundColor: "#F0F4F8",
-          borderRight: "1px solid #F0F4F8",
-        }}
-      >
+      {/* Sidebar chỉ hiển thị ở màn hình lớn */}
+      {!isMobile && (
         <Box
           sx={{
-            
-            flexDirection: "column",
+            width: 250,
+            backgroundColor: "#F0F4F8",
+            borderRight: "1px solid #F0F4F8",
             height: "100vh",
-            display: { xs: "none", sm: "block" },
           }}
         >
           {drawer}
-          {/* <List sx={{ pt: 0 }}>
-            {menuItems.map((item, index) => (
-              <ListItem key={index} disablePadding>
-                <ListItemButton
-                  selected={selectedIndex === index}
-                  onClick={() => handleListItemClick(index)}
-                  sx={{
-                    "&.Mui-selected": {
-                      borderRadius: "5px",
-                    },
-                  }}
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List> */}
         </Box>
-      </Box>
+      )}
     </>
   );
 }
