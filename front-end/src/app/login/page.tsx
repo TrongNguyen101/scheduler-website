@@ -6,7 +6,6 @@ import Link from "next/link";
 import { SignIn } from "@/api/authAPI";
 import { useAuth } from "@/context/authcontext"; // import context
 import * as Validation from "@/helper/vadilationHelper";
-import FormCreateUser from "@/component/Form/FormCreateUser";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,7 +16,7 @@ export default function LoginPage() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth(); // lấy hàm login từ context
+  const { login } = useAuth(); // get login function from context
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");

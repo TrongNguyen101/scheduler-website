@@ -3,15 +3,12 @@ import React from "react";
 import Header from "@/component/Header/header";
 import { Schedule } from "@/component/Schedule";
 import ProtectedRoute from "@/context/ProtectedRoute";
-import FormCreateUser from "@/component/Form/FormCreateUser";
 function Page() {
   return (
-    <>
-      <FormCreateUser />
-
+    <ProtectedRoute allowedRoles={["Student"]}>
       <Header />
       <Schedule />
-    </>
+    </ProtectedRoute>
   );
 }
 
