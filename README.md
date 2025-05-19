@@ -19,7 +19,57 @@
 - **SQL Server**: (local or remote instance)
 - **Git**
 
-#### Backend Setup
+
+## Directory Structure for Back-End Web (ASP .Net 8)
+### 1. `Controllers/`
+- **Purpose**: Manage requests and responses from clients and api endpoints
+
+---
+### 2. `DataContext/`
+- **Purpose**: Configure connection string if not configured from DI (Dependency Injection) and Set up seed data for table.
+
+---
+
+### 3. `DTO`
+- **Purpose**: Only pass necessary fields, avoid sending entire entity model.
+
+---
+
+### 4. `Helper/`
+- **Purpose**: contains AutoMapper to map data from DTO and corresponding model
+---
+
+### 5. `Migrations/`
+- **Purpose**: creates and updates database
+---
+
+### 6. `Model/`
+- **Purpose**: contains properties of tables
+---
+
+### 7. `Repository/`
+- **Purpose**: contains CRUD methods (Create, Read, Update, Delete) for tables
+---
+
+### 8. `services/`
+- **Purpose**: contains service functions and corresponding interfaces
+---
+
+### 8. `Program/`
+- **Purpose**: contains initialization and configuration methods for the application
+---
+
+### 9. `.appsettings.json`
+- **Purpose usage**:
+Contains environment variables such as:
+- `ConnectionStrings`: Syncfusion license key.
+- `JWT`: Main API path.
+- `AllowedHosts`: Prefix for endpoint.
+- Other security configuration variables.
+
+---
+
+## Back-End Setup
 1. **Navigate to the backend directory:** 
  ```bash
    cd back-end/SchedulerAPI
@@ -39,25 +89,24 @@
  ```bash
    dotnet ef database update
    ```
-5. **Run the backend server:**
+5. **Run the backend server HTTPS: (https://localhost:7166/)**
  ```bash
    dotnet run --launch-profile https
-   or 
+   ```
+6. **Run the backend server (Swagger) HTTPS: (https://localhost:7166/swagger/index.html)**
+ ```bash
    dotnet watch run --launch-profile https
    ```
-#### Backend Setup
-1. **Navigate to the frontend directory:** 
+
+7. **Run the backend server HTTP: (http://localhost:5133/)**
  ```bash
-   cd front-end
+   dotnet run --launch-profile https
    ```
-2. **Install dependencies:**
+8. **Run the backend server (Swagger) HTTP: (http://localhost:5133/swagger/index.html)**
  ```bash
-   npm install --legacy-peer-deps
+   dotnet watch run --launch-profile https
    ```
-3. **Start the development server:**
-```bash
-   npm run dev
-   ```   
+
 
 ## Directory Structure for Front-End Web (NextJS 15)
 ### 1. `app/`
@@ -245,53 +294,18 @@ DragAndDrop,
 ```
 - **Reference source**: [Tailwind CSS](https://tailwindcss.com/)
 
-
-## Directory Structure for Back-End Web (ASP .Net 8)
-### 1. `Controllers/`
-- **Purpose**: Manage requests and responses from clients and api endpoints
-
----
-### 2. `DataContext/`
-- **Purpose**: Configure connection string if not configured from DI (Dependency Injection) and Set up seed data for table.
-
----
-
-### 3. `DTO`
-- **Purpose**: Only pass necessary fields, avoid sending entire entity model.
-
----
-
-### 4. `Helper/`
-- **Purpose**: contains AutoMapper to map data from DTO and corresponding model
----
-
-### 5. `Migrations/`
-- **Purpose**: creates and updates database
----
-
-### 6. `Model/`
-- **Purpose**: contains properties of tables
----
-
-### 7. `Repository/`
-- **Purpose**: contains CRUD methods (Create, Read, Update, Delete) for tables
----
-
-### 8. `services/`
-- **Purpose**: contains service functions and corresponding interfaces
----
-
-### 8. `Program/`
-- **Purpose**: contains initialization and configuration methods for the application
----
-
-### 9. `.appsettings.json`
-- **Purpose usage**:
-Contains environment variables such as:
-- `ConnectionStrings`: Syncfusion license key.
-- `JWT`: Main API path.
-- `AllowedHosts`: Prefix for endpoint.
-- Other security configuration variables.
-
+## Front-End Setup
+1. **Navigate to the frontend directory:** 
+ ```bash
+   cd front-end
+   ```
+2. **Install dependencies:**
+ ```bash
+   npm install --legacy-peer-deps
+   ```
+3. **Start the development server:**
+```bash
+   npm run dev
+   ```
 
 
