@@ -20,7 +20,7 @@
 - **Git**
 
 
-## Directory Structure for Back-End Web (ASP .Net 8)
+## Directory Structure for Back-End Web (ASP.Net Version 8.0)
 ### 1. `Controllers/`
 - **Purpose**: Manage requests and responses from clients and api endpoints
 
@@ -108,7 +108,7 @@ Contains environment variables such as:
    ```
 
 
-## Directory Structure for Front-End Web (NextJS 15)
+## Directory Structure for Front-End Web (NextJS Version 15)
 ### 1. `app/`
 - **Description**: NextJS 15 uses the App Router mechanism, so routing is based on folder names.
 
@@ -290,7 +290,6 @@ DragAndDrop,
 
 ```
 /style/global.css
-
 ```
 - **Reference source**: [Tailwind CSS](https://tailwindcss.com/)
 
