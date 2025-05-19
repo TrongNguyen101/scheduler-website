@@ -24,7 +24,6 @@ export const SignIn = async (
       email,
       password,
     });
-    console.log(response);
     // return response.data and must meet all the types defined in LoginResponse
     return {
       status: response.status,
@@ -39,7 +38,6 @@ export const SignIn = async (
       },
     };
   } catch (error) {
-    console.log(error);
     // also takes the data type of LoginResponse
     return error as LoginResponse;
   }

@@ -52,12 +52,10 @@ export default function LoginPage() {
     }
     try {
       const result = await SignIn("/auth/login", email, password);
-      console.log(result);
       if (result.status === 200) {
         login(result.data.data);
         setLoading(false);
       } else if (result.status === 401) {
-        console.log(result.response.data);
         setError(result.response.data.message);
         setLoading(false);
         return;

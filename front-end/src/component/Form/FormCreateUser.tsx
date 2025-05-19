@@ -100,7 +100,7 @@ export default function FormCreateUser() {
 
       <form onSubmit={handleRegister}>
         <div className="grid grid-cols-2 gap-4">
-          {/* Họ và tên */}
+          {/* FullName */}
           <div>
             <label
               htmlFor="fullName"
@@ -162,7 +162,7 @@ export default function FormCreateUser() {
             )}
           </div>
 
-          {/* Mã sinh viên */}
+          {/*Student Code*/}
           <div>
             <label
               htmlFor="studentId"
@@ -193,7 +193,7 @@ export default function FormCreateUser() {
             )}
           </div>
 
-          {/* Số điện thoại */}
+          {/*Phone Number*/}
           <div>
             <label
               htmlFor="phoneNumber"
@@ -225,7 +225,7 @@ export default function FormCreateUser() {
           </div>
         </div>
 
-        {/* Địa chỉ - Full Width */}
+        {/* Address */}
         <div className="mt-4">
           <label
             htmlFor="address"
@@ -257,7 +257,7 @@ export default function FormCreateUser() {
         </div>
 
         <div className="grid grid-cols-2 gap-4 mt-4">
-          {/* Mật khẩu */}
+          {/* Password */}
           <div>
             <label
               htmlFor="password"
@@ -283,7 +283,7 @@ export default function FormCreateUser() {
             )}
           </div>
 
-          {/* Xác nhận mật khẩu */}
+          {/* Confirm Password */}
           <div>
             <label
               htmlFor="confirmPassword"

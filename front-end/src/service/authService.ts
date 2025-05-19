@@ -1,5 +1,4 @@
 import { baseURL } from "@/utils/baseURL";
-// import { AxiosRequestConfig } from "axios";
 
 interface LoginPayload {
   email: string;

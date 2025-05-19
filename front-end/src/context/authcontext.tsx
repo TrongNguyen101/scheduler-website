@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = (token: string) => {
     const decoded: DecodedToken = jwtDecode(token);
-    console.log(decoded);
+    // console.log(decoded);
 
     if (decoded.role == "Admin") {
       router.push("/admin/dashboard");
