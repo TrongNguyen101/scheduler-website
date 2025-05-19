@@ -1,165 +1,309 @@
 # Scheduler-Website
 
+## Introduction
+The Timetable Management System is a powerful and user-friendly web-based platform designed to help schools, lecturers, and students efficiently organize, manage, and access their schedules. With a clean and intuitive interface, the system simplifies key tasks such as managing student and teacher information, assigning classes and teaching sessions, organizing classrooms, and viewing timetables with ease, etc. Additionally, it includes smart scheduling features that help optimize timetables, improve productivity, and reduce conflicts.
+## Tech Stack
+##### The Scheduler-Website is built using the following technologies:
+- **Frontend**: React.js
+- **Backend**: ASP.NET
+- **Database**: SQL Server
+- **Authentication**: JWT (JSON Web Tokens)
+- **Version Control**: Git, GitHub
+- **Package Management**: npm (Node Package Manager)
 
-## Directory Structure for Front-End Web (NextJS 15)
+## Setup and Run Guidelines
+### Prerequisites
+##### Ensure you have the following installed on your system:
+- **Node.js**: (v16 or later) and npm
+- **.NET SDK**: (v8.0 or later)
+- **SQL Server**: (local or remote instance)
+- **Git**
 
+
+## Directory Structure for Back-End Web (ASP.Net Version 8.0)
+### 1. `Controllers/`
+- **Purpose**: Manage requests and responses from clients and api endpoints
+
+---
+### 2. `DataContext/`
+- **Purpose**: Configure connection string if not configured from DI (Dependency Injection) and Set up seed data for table.
+
+---
+
+### 3. `DTO`
+- **Purpose**: Only pass necessary fields, avoid sending entire entity model.
+
+---
+
+### 4. `Helper/`
+- **Purpose**: Contains AutoMapper to map data from DTO and corresponding model
+---
+
+### 5. `Migrations/`
+- **Purpose**: Creates and updates database
+---
+
+### 6. `Model/`
+- **Purpose**: Contains properties of tables
+---
+
+### 7. `Repository/`
+- **Purpose**: Contains methods query database 
+---
+
+### 8. `Services/`
+- **Purpose**: Contains CRUD methods(create,update,read,delete)
+---
+
+### 9. `Program/`
+- **Purpose**: Contains initialization and configuration methods for the application
+---
+
+### 10. `.appsettings.json`
+- **Purpose usage**:
+Contains environment variables such as:
+- `ConnectionStrings`: Syncfusion license key.
+- `JWT`: Main API path.
+- `AllowedHosts`: Prefix for endpoint.
+- Other security configuration variables.
+
+---
+
+## Back-End Setup
+1. **Navigate to the backend directory:** 
+ ```bash
+   cd back-end/SchedulerAPI
+   ```
+2. **Restore NuGet packages:**
+ ```bash
+   dotnet restore
+   ```
+3. **Update the database connection string in file appsettings.json:**
+ ```bash
+"ConnectionStrings": {
+        "DefaultConnection": "Server=Localhost;Database=SchedulerDB;User Id=sa;Password=Your-Password;Trust Server Certificate=true" 
+        }
+
+  ```
+4. **Apply database migrations:**
+ ```bash
+   dotnet ef database update
+   ```
+5. **Run the backend server HTTPS: (https://localhost:7166/)**
+ ```bash
+   dotnet run --launch-profile https
+   ```
+6. **Run the backend server (Swagger) HTTPS: (https://localhost:7166/swagger/index.html)**
+ ```bash
+   dotnet watch run --launch-profile https
+   ```
+
+7. **Run the backend server HTTP: (http://localhost:5133/)**
+ ```bash
+   dotnet run --launch-profile https
+   ```
+8. **Run the backend server (Swagger) HTTP: (http://localhost:5133/swagger/index.html)**
+ ```bash
+   dotnet watch run --launch-profile https
+   ```
+
+
+## Directory Structure for Front-End Web (NextJS Version 15)
 ### 1. `app/`
-- **Mô tả**: NextJS 15 sử dụng cơ chế App Router, nên routing dựa vào tên folder.
-- **Ví dụ**:  
-  `localhost:3000/admin` tương ứng với folder `/app/admin`.
-- **Chi tiết**:
-  - Mỗi folder sẽ chứa:
-    - `layout.tsx`: Root layout cho trang (thường chứa các component như `Header`, `Footer`, `Nav`, ... nếu cần thiết).
-    - `page.tsx`: Chứa UI chính của trang.
-  - **Lưu ý**:
-    - Với các trang đơn giản như `login`, chỉ cần duy nhất file `page.tsx`.
+- **Description**: NextJS 15 uses the App Router mechanism, so routing is based on folder names.
+
+- **Example**:
+`localhost:3000/admin` corresponds to the `/app/admin` folder.
+
+- **Details**:
+
+Each folder will contain:
+
+- `layout.tsx`: Root layout for the page (usually contains components such as `Header`, `Footer`, `Nav`, ... if necessary).
+
+- `page.tsx`: Contains the main UI of the page.
+
+- **Note**:
+
+For simple pages such as `login`, only the `page.tsx` file is needed.
 
 ---
 
 ### 2. `api/`
-- **Mô tả**: 
-  Đây là nơi định nghĩa các hàm để gọi API, truyền endpoint, data và config cho các method của Axios.
-- **Ví dụ**:
-  ```typescript
-  export const createData = async (data: object) => { 
-    const response = await ExampleAPI.createPosts("posts", data, { 
-      headers: { 
-        "Content-Type": "application/json", 
-      }, 
-    }); 
-    console.log(response); 
-    return response;
-  };
-  ```
-  - `posts`: Là endpoint.
-  - `data`: Dữ liệu cần truyền.
-  - `{ headers }`: Cấu hình bổ sung (ví dụ: token, content-type,...).
+- **Description**:
+This is where functions are defined to call the API, pass endpoints, data and config to Axios methods.
+
+- **For example**: 
+```typescript 
+export const createData = async (data: object) => { 
+const response = await ExampleAPI.createPosts("posts", data, { 
+headers: { 
+"Content-Type": "application/json", 
+}, 
+}); 
+console.log(response); 
+return response; 
+}; 
+``` 
+- `posts`: Is the endpoint. 
+- `data`: Data to be transmitted. 
+- `{ headers }`: Additional configuration (eg token, content-type,...).
 
 ---
 
 ### 3. `component/`
-- **Mô tả**: 
-  Chứa các component dùng chung như:
-  - `Header`, `Nav`, `Footer`, `Button`, `Modal`, `Alert`, ...
+- **Description**:
+Contains common components such as:
+
+- `Header`, `Nav`, `Footer`, `Button`, `Modal`, `Alert`, ...
 
 ---
 
 ### 4. `context/`
-- **Mô tả**: 
-  Chứa các file quản lý state toàn cục, đặc biệt là liên quan đến xác thực và phân quyền.
-- **Ví dụ**:
-  - `authcontext.tsx`: Xử lý trạng thái đăng nhập, lưu trữ token.
-  - `protectedrouter.tsx`: Kiểm tra quyền truy cập route dựa trên role của người dùng.
+- **Description**:
+Contains files that manage global state, especially related to authentication and authorization.
+
+- **Examples**:
+
+- `authcontext.tsx`: Handles login status, stores tokens.
+
+- `protectedrouter.tsx`: Checks route access based on user roles.
 
 ---
 
 ### 5. `hooks/`
-- **Mô tả**: 
-  Chứa các custom hooks tái sử dụng nhiều lần trong dự án.
-- **Ví dụ**:
-  - Custom `useEffect`, `useFetch`, `useDebounce`, ...
+- **Description**:
+Contains custom hooks that can be reused multiple times in the project.
+- **Example**:
+
+- Custom `useEffect`, `useFetch`, `useDebounce`, ...
 
 ---
 
 ### 6. `lib/`
-- **Mô tả**: 
-  Thư mục dành cho các thư viện, tiện ích mở rộng tùy chỉnh phục vụ cho dự án.
+- **Description**:
+Directory for libraries, custom extensions for the project.
 
 ---
 
 ### 7. `services/`
-- **Mô tả**: 
-  Chứa các hàm xử lý logic gọi API, trung gian giữa tầng `api` và hệ thống.
-- **Ví dụ**:
-  ```typescript
-  export const createPosts = async (
-    path: string, 
-    data: object, 
-    config?: AxiosRequestConfig
-  ) => { 
-    const response = await baseURL.post(path, data, config); 
-    return response.data;
-  };
-  ```
-  - Các tham số `path`, `data`, `config` sẽ được truyền từ các hàm trong folder `api` khi gọi tới.
+- **Description**:
+Contains functions that handle API call logic, intermediary between the `api` layer and the system.
+
+- **Example**:
+```typescript
+export const createPosts = async (
+path: string,
+data: object,
+config?: AxiosRequestConfig
+) => {
+const response = await baseURL.post(path, data, config);
+return response.data;
+};
+```
+- The parameters `path`, `data`, `config` will be passed from the functions in the `api` folder when called.
 
 ---
 
 ### 8. `utils/`
-- **Mô tả**: 
-  Chứa các hàm và cấu hình dùng chung cho toàn bộ dự án.
-- **Ví dụ**:
-  - `baseURL.ts`: Khởi tạo instance của Axios.
-  - `registerLicense.ts`: Hàm đăng ký license key của Syncfusion trước khi sử dụng component.
+- **Description**:
+Contains functions and configurations shared by the entire project.
+
+- **Example**:
+
+`baseURL.ts`: Initialize an instance of Axios.
+
+- `registerLicense.ts`: Function to register the Syncfusion license key before using the component.
 
 ---
 
 ### 9. `.env`
-- **Mô tả**: 
-  Chứa các biến môi trường như:
-  - `LICENSE_KEY`: Key bản quyền Syncfusion.
-  - `API_URL`: Đường dẫn API chính.
-  - `API_PREFIX`: Tiền tố cho endpoint.
-  - Các biến cấu hình bảo mật khác.
+- **Description**:
+Contains environment variables such as:
 
+- `LICENSE_KEY`: Syncfusion license key.
 
+- `API_URL`: Main API path.
+
+- `API_PREFIX`: Prefix for endpoint.
+
+- Other security configuration variables.
 
 ## Front-End Web Libraries Documentation
 
 ### 1. Material UI (MUI)
-- **Mục đích sử dụng**: Dùng cho các component nhỏ như `Button`, `Alert`, `Icon`, ...
-- **Nguồn tham khảo**: [MUI - The React component library you always wanted](https://mui.com/)
-- **Cài đặt package**:
-  ```bash
-  npm install @mui/material @emotion/react @emotion/styled
-  ```
-- **Cách import vào hệ thống**:
-  Ví dụ import Icon:
-  ```typescript
-  import SendIcon from "@mui/icons-material/Send";
-  ```
-- **Ví dụ**: Xem tại thư mục `component/button`
+- **Purpose of use**: Used for small components such as `Button`, `Alert`, `Icon`, ...
+- **Reference source**: [MUI - The React component library you always wanted](https://mui.com/)
+- **Install package**:
+```bash
+npm install @mui/material @emotion/react @emotion/styled
+```
+- **How ​​to import into the system**:
+Example import Icon:
+```typescript
+import SendIcon from "@mui/icons-material/Send";
+```
+- **Example**: See the `component/button` folder
 
 ---
 
 ### 2. Syncfusion
-- **Mục đích sử dụng**: Dùng cho các component lớn như:
-  - `Chart`
-  - `Scheduler`
-  - `Dashboard`
-- **Nguồn tham khảo**: [Syncfusion UI Components](https://www.syncfusion.com/)
+- **Intended use**: Used for large components such as:
+- `Chart`
+- `Scheduler`
+- `Dashboard`
+- **Reference**: [Syncfusion UI Components](https://www.syncfusion.com/)
 - **License Key**:
-  - Đã được lưu trong file `.env` của dự án.
-- **Cài đặt & Import**:
-  Ví dụ import Scheduler:
-  ```typescript
-  import {
-    ScheduleComponent,
-    Week,
-    WorkWeek,
-    Month,
-    Agenda,
-    Inject,
-    DragAndDrop,
-  } from "@syncfusion/ej2-react-schedule";
-  ```
-- **Lưu ý**:
-  - Khi sử dụng phải gọi hàm `registerSyncfusionLicense()` tại file:
-    ```
-    /component/registerLicense.ts
-    ```
-  - Hàm này sẽ tự động lấy key từ biến môi trường để kích hoạt bản quyền.
-- **Custom**:
-  - Có thể tuỳ chỉnh giao diện và chức năng bằng cách thay đổi các `props` truyền vào component.
+- Saved in the project's `.env` file.
+- **Install & Import**:
+Example import Scheduler:
+```typescript
+import {
+ScheduleComponent,
+Week,
+WorkWeek,
+Month,
+Agenda,
+Inject,
+DragAndDrop,
+} from "@syncfusion/ej2-react-schedule";
+```
+**Note**:
+- When using, you must call the function `registerSyncfusionLicense()` in the file
+
+```
+/component/registerLicense.ts
+```
+- This function will automatically get the key from the environment variable to activate the license.
+
+**Custom**:
+- You can customize the interface and functionality by changing the `props` passed to the component.
 
 ---
 
 ### 3. Tailwind CSS
-- **Mục đích sử dụng**: Thiết lập UI tổng thể cho website (utility-first CSS framework).
-- **Cấu hình**:
-  - Đã được config sẵn trong file:
-    ```
-    /style/global.css
-    ```
-- **Nguồn tham khảo**: [Tailwind CSS](https://tailwindcss.com/)
+**Purpose of use**: Set up the overall UI for the website (utility-first CSS framework).
+
+**Configuration**:
+- Already configured in the file:
+
+```
+/style/global.css
+```
+- **Reference source**: [Tailwind CSS](https://tailwindcss.com/)
+
+## Front-End Setup
+1. **Navigate to the frontend directory:** 
+ ```bash
+   cd front-end
+   ```
+2. **Install dependencies:**
+ ```bash
+   npm install --legacy-peer-deps
+   ```
+3. **Start the development server:**
+```bash
+   npm run dev
+   ```
+
 
