@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SchedulerAPI.Repository;
 using SchedulerAPI.DAO;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,7 +65,10 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-builder.Services.AddDbContext<SchedulerContext>();
+builder.Services.AddDbContext<SchedulerContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 builder.Services.AddAutoMapper(typeof(AutoMappingProfiles));
 builder.Services.AddCors();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

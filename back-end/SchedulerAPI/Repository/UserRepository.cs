@@ -12,6 +12,15 @@ namespace SchedulerAPI.DAO
     /// </summary>
     public class UserRepository : IUserRepository
     {
+        private readonly SchedulerContext context;
+
+        #region Constructor
+        public UserRepository(SchedulerContext schedulerContext)
+        {
+            this.context = schedulerContext;
+        }
+        #endregion
+
         #region Methods
         /// <summary>
         /// Retrieves all users from the database
@@ -21,19 +30,15 @@ namespace SchedulerAPI.DAO
         /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task<List<User>> GetAllUsers()
         {
-            // Create a new database context with using statement to ensure proper disposal
-            using (var context = new SchedulerContext())
+            try
             {
-                try
-                {
-                    // Asynchronously retrieve all users from the database
-                    return await context.Users.ToListAsync();
-                }
-                catch (Exception ex)
-                {
-                    // Wrap and rethrow exception with contextual information
-                    throw new Exception($"Error retrieving users: {ex.Message}");
-                }
+                // Asynchronously retrieve all users from the database
+                return await context.Users.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Wrap and rethrow exception with contextual information
+                throw new Exception($"Error retrieving users: {ex.Message}");
             }
         }
 
@@ -46,17 +51,14 @@ namespace SchedulerAPI.DAO
         /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task<User> GetUserByEmailAsync(string email)
         {
-            using (var context = new SchedulerContext())
+            try
             {
-                try
-                {
-                    // Find the first user matching the email or return null if none found
-                    return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error retrieving user with email {email}: {ex.Message}");
-                }
+                // Find the first user matching the email or return null if none found
+                return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving user with email {email}: {ex.Message}");
             }
         }
 
@@ -69,17 +71,14 @@ namespace SchedulerAPI.DAO
         /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task<User> GetUserById(int id)
         {
-            using (var context = new SchedulerContext())
+            try
             {
-                try
-                {
-                    // FindAsync is optimized for primary key lookups
-                    return await context.Users.FindAsync(id);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error retrieving user with ID {id}: {ex.Message}");
-                }
+                // FindAsync is optimized for primary key lookups
+                return await context.Users.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving user with ID {id}: {ex.Message}");
             }
         }
 
@@ -92,19 +91,16 @@ namespace SchedulerAPI.DAO
         /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task AddUserAsync(User user)
         {
-            using (var context = new SchedulerContext())
+            try
             {
-                try
-                {
-                    // Track the new user entity in the context
-                    await context.Users.AddAsync(user);
-                    // Persist changes to the database
-                    await context.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error adding user: {ex.Message}");
-                }
+                // Track the new user entity in the context
+                await context.Users.AddAsync(user);
+                // Persist changes to the database
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error adding user: {ex.Message}");
             }
         }
 
@@ -117,19 +113,16 @@ namespace SchedulerAPI.DAO
         /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task UpdateUserAsync(User user)
         {
-            using (var context = new SchedulerContext())
+            try
             {
-                try
-                {
-                    // Mark the entity as modified in the context
-                    context.Users.Update(user);
-                    // Persist changes to the database
-                    await context.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error updating user: {ex.Message}");
-                }
+                // Mark the entity as modified in the context
+                context.Users.Update(user);
+                // Persist changes to the database
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error updating user: {ex.Message}");
             }
         }
 
@@ -142,25 +135,22 @@ namespace SchedulerAPI.DAO
         /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task DeleteUserAsync(int id)
         {
-            using (var context = new SchedulerContext())
+            try
             {
-                try
+                // Retrieve the user first to confirm they exist
+                var user = await GetUserById(id);
+                if (user != null)
                 {
-                    // Retrieve the user first to confirm they exist
-                    var user = await GetUserById(id);
-                    if (user != null)
-                    {
-                        // Mark the entity for deletion in the context
-                        context.Users.Remove(user);
-                        // Persist changes to the database
-                        await context.SaveChangesAsync();
-                    }
-                    // If user is null, no action is taken (silently handle non-existent user)
+                    // Mark the entity for deletion in the context
+                    context.Users.Remove(user);
+                    // Persist changes to the database
+                    await context.SaveChangesAsync();
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error deleting user: {ex.Message}");
-                }
+                // If user is null, no action is taken (silently handle non-existent user)
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting user: {ex.Message}");
             }
         }
 
@@ -173,24 +163,21 @@ namespace SchedulerAPI.DAO
         /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task<string> GetRoleByEmail(string email)
         {
-            using (var context = new SchedulerContext())
+            try
             {
-                try
+                // Find the user by email
+                var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+                if (user != null)
                 {
-                    // Find the user by email
-                    var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-                    if (user != null)
-                    {
-                        // Return the role if user exists
-                        return user.Role;
-                    }
-                    // Return null if user not found
-                    return null;
+                    // Return the role if user exists
+                    return user.Role;
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error retrieving role for user with email {email}: {ex.Message}");
-                }
+                // Return null if user not found
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving role for user with email {email}: {ex.Message}");
             }
         }
 
@@ -203,16 +190,13 @@ namespace SchedulerAPI.DAO
         /// <exception cref="Exception">Thrown when database operation fails</exception>
         public async Task<User> GetUserByEmail(string email)
         {
-            using (var context = new SchedulerContext())
+            try
             {
-                try
-                {
-                    return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error retrieving user with email {email}: {ex.Message}");
-                }
+                return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving user with email {email}: {ex.Message}");
             }
         }
         #endregion
