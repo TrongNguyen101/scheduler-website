@@ -1,9 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import * as GetData from "@/api/exampleAPI";
-import IconLabelButtons from "@/components/button";
 import AdminLayout from "@/components/AdminLayout/AdminLayout";
 import { Schedule } from "@/components/Schedule";
+import IconLabelButtons from "@/components/button";
+import { Subject } from "@/components/Subject";
+
+// import ProtectedRoute from "@/context/ProtectedRoute";
+// import Header from "@/component/Header/header";
+// import { Subject } from "@/components/Subject";
 
 interface Post {
   id: number;
@@ -37,7 +42,7 @@ function Dashboard() {
     <>
       {/* AdminLayout is main layout for Admin */}
       <AdminLayout>
-        <Schedule />
+        <Subject />
         <div className="min-h-screen bg-gray-100 p-8">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-3xl font-bold text-blue-600 mb-4">Dashboard</h1>
@@ -78,6 +83,10 @@ function Dashboard() {
         </div>
       </AdminLayout>
     </>
+    // <>
+    //   <Header />
+    //   <Subject/>
+    // </>
   );
 }
 
