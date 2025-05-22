@@ -7,23 +7,25 @@ import { Event, eventData } from "@/utils/data";
 type WeekRange = {
   start: Date;
   end: Date;
-  label: string;
+  label: string; // ex: "20/01 To 27/01"
 };
 
-// Function to generate week ranges for a given year
+// Generate an array of weekly ranges for the specified year
 const generateWeekRanges = (year: number) => {
   const weeks: WeekRange[] = [];
-  // const today = new Date();
-  const current = new Date(year, 0, 1);
-  while (current.getDay() !== 1) current.setDate(current.getDate() + 1); // Tìm Monday
+  const current = new Date(year, 0, 1); // Start from January 1st of the year
+
+  while (current.getDay() !== 1) current.setDate(current.getDate() + 1); // Move to the first Monday of the year
 
   let currentWeek;
-
   const today = new Date();
+
+  // Continue adding weeks until the year ends
   while (current.getFullYear() === year) {
-    const start = new Date(current);
+    const start = new Date(current); // Monday
     const end = new Date(current);
-    end.setDate(start.getDate() + 6);
+    end.setDate(start.getDate() + 6); // End of the week (Sunday)
+
     const item = {
       start,
       end,
@@ -35,23 +37,26 @@ const generateWeekRanges = (year: number) => {
         end.getMonth() + 1
       )
         .toString()
-        .padStart(2, "0")}`,
+        .padStart(2, "0")}`, // Format label as "dd/mm To dd/mm"
     };
-
     weeks.push(item);
 
+    // Set currentWeek if today is in this range
     if (start.getTime() <= today.getTime() && today.getTime() <= end.getTime())
       currentWeek = item;
 
+    // Move to the next week
     current.setDate(current.getDate() + 7);
   }
 
   return { weeks, currentWeek };
 };
 
+// Main component that includes year and week filters and displays events
 const TimetableWithFilter = () => {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
+
   const weeksGenerate = generateWeekRanges(currentYear);
   const [weeks, setWeeks] = useState<WeekRange[]>(weeksGenerate.weeks);
   const [selectedWeek, setSelectedWeek] = useState<WeekRange>(
@@ -67,7 +72,7 @@ const TimetableWithFilter = () => {
     );
   }, [selectedYear]);
 
-  // Filter events that fall within the selected week
+  // Filter events to only include those within the selected week
   const filteredEvents: Event[] = eventData.filter((event) => {
     const eventDate = new Date(event.StartTime);
     return eventDate >= selectedWeek.start && eventDate <= selectedWeek.end;
@@ -85,7 +90,7 @@ const TimetableWithFilter = () => {
         Schedule for the week
       </Typography>
 
-      <Box sx={{ pl: 4, pr: 4 }}>
+      <Box sx={{ pl: 1, pr: 1 }}>
         <Box display="flex" mb={2} gap={2} flexWrap="wrap">
           {/* Select year */}
           <Box sx={{ minWidth: 80, maxWidth: 120 }}>

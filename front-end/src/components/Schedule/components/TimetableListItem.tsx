@@ -28,7 +28,7 @@ const TimetableListItem = ({ event }: TimetableListItemProps) => {
         }`,
         backgroundColor: "#fafafa",
         height: "auto",
-        minHeight: 200,
+        minHeight: 220,
         width: "100%",
         overflow: "hidden",
         display: "flex",
