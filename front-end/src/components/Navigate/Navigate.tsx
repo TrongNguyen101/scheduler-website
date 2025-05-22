@@ -11,6 +11,7 @@ import { useState } from "react";
 export default function Navigate({ isMobile }: { isMobile?: boolean }) {
   const [activeItem, setActiveItem] = useState("Schedule");
 
+  // List navigate on header
   const navItems = [
     { name: "Schedule", icon: <CalendarDays size={20} />, path: "/teacher" },
     { name: "Class", icon: <Users size={20} />, path: "/teacher/class" },

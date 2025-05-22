@@ -1,31 +1,29 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  ReactNode,
-} from "react";
+import React, { useEffect, useRef, useState, ReactNode } from "react";
 import { Bell, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+// Custom hook to detect if screen width is under a certain breakpoint (mobile view)
 function useIsMobile(breakpoint = 868) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < breakpoint);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    handleResize(); // Run once on mount
+    window.addEventListener("resize", handleResize); // Add resize listener
+    return () => window.removeEventListener("resize", handleResize); // Clean up
   }, [breakpoint]);
 
   return isMobile;
 }
 
+// Header component with optional children passed as navigation
 export default function Header({ children }: { children?: ReactNode }) {
   const isMobile = useIsMobile();
   const [isUserSectionOpen, setIsUserSectionOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  // Close dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
