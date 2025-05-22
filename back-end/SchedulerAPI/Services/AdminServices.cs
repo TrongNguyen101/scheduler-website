@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Update;
 using SchedulerAPI.DAO;
+using SchedulerAPI.DataContext;
 using SchedulerAPI.DTO;
 using SchedulerAPI.Model;
 using SchedulerAPI.Repository;
@@ -12,6 +14,8 @@ namespace SchedulerAPI.Services
     public class AdminServices : IAdminServices
     {
         #region Fields
+        private readonly SchedulerContext context;
+        private readonly ILogger<AdminServices> logger;
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
         #endregion
@@ -22,10 +26,15 @@ namespace SchedulerAPI.Services
         /// </summary>
         /// <param name="mapper">AutoMapper instance for object mapping</param>
         /// <param name="userRepository">Repository for user data operations</param>
-        public AdminServices(IMapper mapper, IUserRepository userRepository)
+        public AdminServices(IMapper mapper,
+            IUserRepository userRepository,
+            SchedulerContext context,
+            ILogger<AdminServices> logger)
         {
+            this.context = context;
             this.mapper = mapper;
             this.userRepository = userRepository;
+            this.logger = logger;
         }
         #endregion
 
@@ -42,32 +51,28 @@ namespace SchedulerAPI.Services
         /// </remarks>
         public async Task<bool> CreateUserAccountAsync(CreateAccount accountUser)
         {
+            using var transaction = await context.Database.BeginTransactionAsync();
             try
             {
-                // Validate that essential fields are provided
-                if (string.IsNullOrEmpty(accountUser.Email) || string.IsNullOrEmpty(accountUser.Password))
+                var existingUser = await userRepository.GetUserByEmailAsync(accountUser.Email);
+                if (existingUser != null)
                 {
-                    // Required data is missing
+                    logger.LogWarning("User with email {Email} already exists", accountUser.Email);
                     return false;
                 }
 
-                // Check if a user with the same email already exists
-                var isAccountExists = await userRepository.GetUserByEmailAsync(accountUser.Email);
-                if (isAccountExists != null)
-                {
-                    // Email is already in use
-                    return false;
-                }
+                var newUser = mapper.Map<User>(accountUser);
+                await userRepository.AddUserAsync(newUser);
 
-                // Map DTO to entity model and save to database
-                var user = mapper.Map<User>(accountUser);
-                await userRepository.AddUserAsync(user);
+                await transaction.CommitAsync();
+                logger.LogInformation("User account created successfully for {Email}", accountUser.Email);
                 return true;
             }
             catch (Exception ex)
             {
-                // Rethrow with more context specific to account creation
-                throw new Exception($"An error occurred while creating the user account: {ex.Message}", ex);
+                await transaction.RollbackAsync();
+                logger.LogError(ex, "Error occurred while creating user account for {Email}. Transaction has been rolled back.", accountUser.Email);
+                throw;
             }
         }
         #endregion
