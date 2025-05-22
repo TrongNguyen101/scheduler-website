@@ -24,7 +24,7 @@ const TimetableList = ({ events, startDate }: TimetableListProps) => {
   const weekDates = getNext7Days(startDate); // Get Monday -> Sunday of the selected week
   const maxSlot = 4; // Assume each day has maximums 4 slots
 
-  // Group slot by day
+  // Group events by each day in the selected week
   const groupedEvents = weekDates.map((date) => {
     const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
     const eventsForDay = events
@@ -41,7 +41,7 @@ const TimetableList = ({ events, startDate }: TimetableListProps) => {
   });
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   // Mobile layout
   if (isMobile) {
@@ -56,7 +56,13 @@ const TimetableList = ({ events, startDate }: TimetableListProps) => {
               p: 2,
             }}
           >
-            <Typography fontWeight="bold" mb={1}>
+            {/* Display day name and date */}
+            <Typography
+              fontWeight="bold"
+              mb={1}
+              textAlign={"center"}
+              fontSize={20}
+            >
               {date.toLocaleDateString("en-GB", {
                 weekday: "short",
                 day: "2-digit",
@@ -73,6 +79,7 @@ const TimetableList = ({ events, startDate }: TimetableListProps) => {
                     fontWeight="bold"
                     color="text.secondary"
                     mb={0.5}
+                    fontSize={16}
                   >
                     Slot {slot}
                   </Typography>

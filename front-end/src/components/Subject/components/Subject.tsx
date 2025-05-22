@@ -83,7 +83,7 @@ export default function Subject() {
   };
 
   return (
-    <Box p={4}>
+    <Box p={1}>
       {/* Page title */}
       <Typography variant="h5" fontWeight="bold" mb={3} textAlign="center">
         Quản Lý Môn Học
