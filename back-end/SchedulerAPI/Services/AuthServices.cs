@@ -1,10 +1,10 @@
-﻿using SchedulerAPI.DAO;
-using SchedulerAPI.Repository;
+﻿using SchedulerAPI.Repository;
 
 namespace SchedulerAPI.Services
 {
     /// <summary>
     /// Provides authentication services for the application.
+    /// This service handles user authentication by verifying credentials against stored user data.
     /// </summary>
     public class AuthServices : IAuthServices
     {
@@ -28,9 +28,17 @@ namespace SchedulerAPI.Services
         /// Authenticates a user by email and password.
         /// </summary>
         /// <param name="email">User's email address</param>
-        /// <param name="password">User's password</param>
+        /// <param name="password">User's password (plain text)</param>
         /// <returns>True if authentication is successful, otherwise false</returns>
         /// <exception cref="Exception">Thrown when an error occurs during authentication</exception>
+        /// <remarks>
+        /// The authentication process:
+        /// 1. Retrieves user by email
+        /// 2. If user exists, verifies the provided password against stored hash
+        /// 3. Returns authentication result
+        /// 
+        /// Uses BCrypt for secure password verification.
+        /// </remarks>
         public async Task<bool> LoginAsync(string email, string password)
         {
             try
@@ -44,9 +52,9 @@ namespace SchedulerAPI.Services
                 }
 
                 // Check if both email and password match
-                // Note: In production, passwords should be hashed and compared securely
-                // TODO: Implement proper password hashing and verification
-                return user.Email.Equals(email) && user.Password.Equals(password);
+                // Using BCrypt to securely verify the password against stored hash
+                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
+                return isPasswordValid;
             }
             catch (Exception ex)
             {
