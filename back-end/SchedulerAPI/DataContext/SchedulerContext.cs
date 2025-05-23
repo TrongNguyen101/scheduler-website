@@ -59,7 +59,7 @@ namespace SchedulerAPI.DataContext
                 Id = 1,
                 Name = "John Doe",
                 Email = "john.example@gmail.com",
-                Password = "Password@123",
+                Password = "$2a$11$dc7/3OhfDj1DxaWofWX0mOOm75jJbOinhP4srvGlmyMKg/xHDMQb2",
                 Role = "Admin",
                 CreateByEmail = null,
             },
@@ -68,7 +68,7 @@ namespace SchedulerAPI.DataContext
                 Id = 2,
                 Name = "Jane Smith",
                 Email = "jane.example@gmail.com",
-                Password = "Password@123",
+                Password = "$2a$11$dc7/3OhfDj1DxaWofWX0mOOm75jJbOinhP4srvGlmyMKg/xHDMQb2",
                 Role = "Lecturer",
                 CreateByEmail = "john.example@gmail.com"
             });
