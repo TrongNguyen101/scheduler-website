@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore.Update;
-using SchedulerAPI.DAO;
 using SchedulerAPI.DataContext;
 using SchedulerAPI.DTO;
 using SchedulerAPI.Model;
