@@ -55,17 +55,21 @@ export default function LoginPage() {
       if (result.status === 200) {
         login(result.data.data);
         setLoading(false);
-      } else if (result.status === 401) {
-        setError(result.response.data.message);
+      } else if (result.status === 400) {
+        setError(result.data.message);
         setLoading(false);
         return;
-      } else {
+      } else if (result.status === 401) {
+        setError(result.data.message);
+        setLoading(false);
+        return;
+      } else if (result.status === 500) {
         setError("Server đang bảo trì hoặc xảy ra lỗi vui lòng thử lại sau");
         console.log(result.data.message);
         setLoading(false);
       }
     } catch (err) {
-      console.error(err);
+      setError("Server đang bảo trì hoặc xảy ra lỗi vui lòng thử lại sau");
       setLoading(false);
     }
   };
