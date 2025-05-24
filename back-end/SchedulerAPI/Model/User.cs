@@ -9,7 +9,7 @@ namespace SchedulerAPI.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Column("Name")]    
+        [Column("Name")]
         public string? Name { get; set; }
         [Column("Email")]
         public string? Email { get; set; }
@@ -19,5 +19,7 @@ namespace SchedulerAPI.Model
         public string? Role { get; set; }
         [Column("CreateByEmail")]
         public string? CreateByEmail { get; set; }
+        [Column("IsDeleted")]
+        public bool IsDeleted { get; set; }
     }
 }

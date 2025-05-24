@@ -67,12 +67,9 @@ namespace SchedulerAPI.Controllers
                 // Check if any users were found
                 if (users == null || !users.Any())
                 {
-                    logger.LogWarning("No users found in the system.");
                     return NotFound("No users found.");
                 }
 
-                // Log success and return the users list with a standardized API response format
-                logger.LogInformation($"Total users found: {users.Count}");
                 return Ok(new APIResponse
                 {
                     Title = "User List",
@@ -108,16 +105,13 @@ namespace SchedulerAPI.Controllers
             {
                 // Attempt to retrieve the user by ID
                 var user = await userServices.GetUserByIdAsync(id);
-
                 // Check if the user was found
                 if (user == null)
                 {
-                    logger.LogWarning($"User with ID {id} not found.");
                     return NotFound($"User with ID {id} not found.");
                 }
 
                 // Return the found user with 200 OK status
-                logger.LogInformation($"User with ID {id} found.");
                 return Ok(user);
             }
             catch (Exception ex)
@@ -148,21 +142,12 @@ namespace SchedulerAPI.Controllers
                 // Validate the user input using model validation
                 if (!ModelState.IsValid)
                 {
-                    // Extract validation errors for logging purposes
-                    var errors = ModelState.Values
-                        .SelectMany(v => v.Errors)
-                        .Select(error => error.ErrorMessage)
-                        .ToList();
-
-                    logger.LogWarning("Invalid user data provided.");
                     return BadRequest(ModelState);
                 }
 
                 // Add the user via the service layer
                 await userServices.AddUserAsync(addUserDTO);
 
-                // Log success and return confirmation
-                logger.LogInformation($"User with email {addUserDTO.Email} added successfully.");
                 return Ok("User added successfully.");
             }
             catch (Exception ex)
@@ -194,15 +179,12 @@ namespace SchedulerAPI.Controllers
                 var existingUser = await userServices.GetUserByIdAsync(userDTO.Id);
                 if (existingUser == null)
                 {
-                    logger.LogWarning($"User with ID {userDTO.Id} not found.");
                     return NotFound($"User with ID {userDTO.Id} not found.");
                 }
 
                 // Perform the update operation
                 await userServices.UpdateUserAsync(userDTO);
 
-                // Log success and return confirmation
-                logger.LogInformation($"User with ID {userDTO.Id} updated successfully.");
                 return Ok("User updated successfully.");
             }
             catch (Exception ex)
@@ -234,15 +216,12 @@ namespace SchedulerAPI.Controllers
                 var existingUser = await userServices.GetUserByIdAsync(id);
                 if (existingUser == null)
                 {
-                    logger.LogWarning($"User with ID {id} not found.");
                     return NotFound($"User with ID {id} not found.");
                 }
 
                 // Perform the deletion operation
                 await userServices.DeleteUserAsync(id);
 
-                // Log success and return confirmation
-                logger.LogInformation($"User with ID {id} deleted successfully.");
                 return Ok("User deleted successfully.");
             }
             catch (Exception ex)
@@ -276,12 +255,10 @@ namespace SchedulerAPI.Controllers
                 // Check if a role was found
                 if (string.IsNullOrEmpty(role))
                 {
-                    logger.LogWarning($"No role found for user with email {email}.");
                     return NotFound($"No role found for user with email {email}.");
                 }
 
                 // Return the found role
-                logger.LogInformation($"Role for user with email {email} found: {role}");
                 return Ok(role);
             }
             catch (Exception ex)

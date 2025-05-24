@@ -66,7 +66,6 @@ namespace SchedulerAPI.Controllers
                 // Validate the model state before proceeding
                 if (!ModelState.IsValid)
                 {
-                    logger.LogWarning($"Invalid model state for create account request: {ModelState}");
                     return BadRequest(ModelState);
                 }
 
@@ -77,14 +76,10 @@ namespace SchedulerAPI.Controllers
                 var result = await adminServices.CreateUserAccountAsync(accountUser);
                 if (result)
                 {
-                    logger.LogInformation($"Account created successfully by admin email: {AuthenticatedEmail}");
                     return Ok("Account created successfully.");
                 }
-                else
-                {
-                    logger.LogWarning($"Failed to create account by admin email: {AuthenticatedEmail}");
-                    return BadRequest("Failed to create account.");
-                }
+
+                return Conflict("Failed to create account.");
             }
             catch (Exception ex)
             {
