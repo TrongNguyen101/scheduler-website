@@ -51,14 +51,11 @@ namespace SchedulerAPI.Controllers
         {
             // Log the login attempt (sensitive operation)
             logger.LogInformation("Login request received for email: {Email}", request.Email);
-
             try
             {
                 // Check if the request model is invalid (BUGFIX: should be !ModelState.IsValid)
                 if (!ModelState.IsValid)
                 {
-                    // Log the validation failure with detailed info
-                    logger.LogWarning($"Invalid model state for login request: {ModelState}");
                     return BadRequest(ModelState);
                 }
 
@@ -68,7 +65,6 @@ namespace SchedulerAPI.Controllers
                 // If authentication fails, return unauthorized response
                 if (!isUser)
                 {
-                    logger.LogWarning("Invalid login attempt for email: {Email}", request.Email);
                     return Unauthorized(new APIResponse
                     {
                         Title = "Login fail",

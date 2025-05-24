@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using SchedulerAPI.DAO;
+using Microsoft.EntityFrameworkCore;
+using SchedulerAPI.DataContext;
 using SchedulerAPI.DTO;
 using SchedulerAPI.Model;
 using SchedulerAPI.Repository;
@@ -13,8 +14,11 @@ namespace SchedulerAPI.Services
     public class UserServicescs : IUserServices
     {
         #region Fields
+        private readonly SchedulerContext context;        // Database context for transaction management
         private readonly IMapper mapperData;
         private readonly IUserRepository userRepository;
+        private readonly ILogger<UserServicescs> logger;   // Logger for recording service operations
+
         #endregion
 
         #region Constructor
@@ -23,10 +27,12 @@ namespace SchedulerAPI.Services
         /// </summary>
         /// <param name="userRepository">Repository for user data operations.</param>
         /// <param name="mapperData">The AutoMapper instance for object mapping.</param>
-        public UserServicescs(IUserRepository userRepository, IMapper mapperData)
+        public UserServicescs(IUserRepository userRepository, IMapper mapperData, SchedulerContext context, ILogger<UserServicescs> logger)
         {
             this.userRepository = userRepository;
             this.mapperData = mapperData;
+            this.context = context;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -48,18 +54,26 @@ namespace SchedulerAPI.Services
         /// <returns>A list of UserDTO objects containing user information, or null if no users found.</returns>
         public async Task<List<UserDTO>> ListAllUser()
         {
-            // Get all users from repository
-            var data = await userRepository.GetAllUsers();
-            if (data == null || !data.Any())
+            try
             {
-                // Return null when no users exist
-                return null;
+                // Get all users from repository
+                var data = await userRepository.GetAllUsers();
+                if (data == null || !data.Any())
+                {
+                    // Return null when no users exist
+                    return null;
+                }
+                else
+                {
+                    // Map domain models to DTOs
+                    var userDTOs = mapperData.Map<List<UserDTO>>(data);
+                    return userDTOs;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Map domain models to DTOs
-                var userDTOs = mapperData.Map<List<UserDTO>>(data);
-                return userDTOs;
+                logger.LogError(ex, "Error occurred while get all user");
+                throw;
             }
         }
 
@@ -70,18 +84,26 @@ namespace SchedulerAPI.Services
         /// <returns>A UserDTO containing the user's information, or null if not found.</returns>
         public async Task<UserDTO> GetUserByIdAsync(int id)
         {
-            // Get specific user by ID
-            var user = await userRepository.GetUserById(id);
-            if (user == null)
+            try
             {
-                // Return null when user not found
-                return null;
+                // Get specific user by ID
+                var user = await userRepository.GetUserById(id);
+                if (user == null)
+                {
+                    // Return null when user not found
+                    return null;
+                }
+                else
+                {
+                    // Map domain model to DTO
+                    var userDTO = mapperData.Map<UserDTO>(user);
+                    return userDTO;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Map domain model to DTO
-                var userDTO = mapperData.Map<UserDTO>(user);
-                return userDTO;
+                logger.LogError(ex, "Error occurred while get user by id {id}", id);
+                throw;
             }
         }
 
@@ -94,17 +116,46 @@ namespace SchedulerAPI.Services
         /// This method checks if a user with the same email already exists but 
         /// doesn't currently handle this case. Consider implementing duplicate handling.
         /// </remarks>
-        public async Task AddUserAsync(AddUserDTO userDTO)
+        public async Task<bool> AddUserAsync(AddUserDTO userDTO)
         {
-            // Check if user with email already exists 
-            // TODO: Add proper handling for duplicate users
-            var existingUser = await userRepository.GetUserByEmailAsync(userDTO.Email);
+            using var transaction = await context.Database.BeginTransactionAsync();
+            try
+            {
+                // Check if user with email already exists 
+                var existingUser = await userRepository.GetUserByEmailAsync(userDTO.Email);
 
-            // Map DTO to domain model
-            var user = mapperData.Map<User>(userDTO);
+                if (existingUser != null)
+                {
+                    // Log warning and return false without throwing exception for this business rule violation
+                    logger.LogWarning("User with email {Email} already exists", userDTO.Email);
+                    return false;
+                }
+                // Map DTO to domain model
+                var user = mapperData.Map<User>(userDTO);
 
-            // Add user to database
-            await userRepository.AddUserAsync(user);
+                // Add user to database
+                await userRepository.AddUserAsync(user);
+
+                // Commit the transaction if everything succeeded
+                // This finalizes all database changes made within the transaction
+                await transaction.CommitAsync();
+
+                logger.LogInformation("User created successfully for {Email}", user.Email);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Rollback the transaction if any error occurs
+                // This ensures database consistency by undoing all operations in this transaction
+                await transaction.RollbackAsync();
+
+                // Log detailed error information for troubleshooting
+                logger.LogError(ex, "Error occurred while add new user");
+
+                // Re-throw the exception for higher level handling
+                // This allows calling methods to implement their own error handling strategies
+                throw;
+            }
         }
 
         /// <summary>
@@ -112,13 +163,44 @@ namespace SchedulerAPI.Services
         /// </summary>
         /// <param name="userDTO">The user information to update.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task UpdateUserAsync(UserDTO userDTO)
+        public async Task<bool> UpdateUserAsync(UserDTO userDTO)
         {
-            // Map DTO to domain model
-            var user = mapperData.Map<User>(userDTO);
+            using var transaction = await context.Database.BeginTransactionAsync();
+            try
+            {
+                // Check if user with email already exists 
+                var existingUser = await userRepository.GetUsersQueryable().AnyAsync(u => u.Id != userDTO.Id && u.Email == userDTO.Email);
 
-            // Update user in database
-            return userRepository.UpdateUserAsync(user);
+                if (existingUser)
+                {
+                    // Log warning and return false without throwing exception for this business rule violation
+                    logger.LogWarning("User with email {Email} already exists", userDTO.Email);
+                    return false;
+                }
+
+                // Map DTO to domain model
+                var user = mapperData.Map<User>(userDTO);
+
+                // Update user in database
+                await userRepository.UpdateUserAsync(user);
+
+                // Commit the transaction if everything succeeded
+                // This finalizes all database changes made within the transaction
+                await transaction.CommitAsync();
+                logger.LogInformation("User updated successfully with email {Email}", user.Email);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Rollback the transaction if any error occurs
+                // This ensures database consistency by undoing all operations in this transaction
+                await transaction.RollbackAsync();
+
+                // Log detailed error information for troubleshooting
+                logger.LogError(ex, "Error occurred while update user with email {Email}", userDTO.Email);
+                throw;
+            }
         }
 
         /// <summary>
@@ -126,10 +208,31 @@ namespace SchedulerAPI.Services
         /// </summary>
         /// <param name="id">The ID of the user to delete.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task DeleteUserAsync(int id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
-            // Delete user from database
-            return userRepository.DeleteUserAsync(id);
+            using var transaction = await context.Database.BeginTransactionAsync();
+            try
+            {
+                // Delete user from database
+                await userRepository.DeleteUserAsync(id);
+
+                // Commit the transaction if everything succeeded
+                // This finalizes all database changes made within the transaction
+                await transaction.CommitAsync();
+
+                logger.LogInformation("User Deleted successfully with id {id}", id);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Rollback the transaction if any error occurs
+                // This ensures database consistency by undoing all operations in this transaction
+                await transaction.RollbackAsync();
+
+                // Log detailed error information for troubleshooting
+                logger.LogError(ex, "Error occurred while delete user with id {id}", id);
+                throw;
+            }
         }
 
         /// <summary>
@@ -139,17 +242,23 @@ namespace SchedulerAPI.Services
         /// <returns>The user's role as a string, or null if the user isn't found.</returns>
         public async Task<string> GetRoleByEmail(string email)
         {
-            // Get user by email
-            var user = await userRepository.GetUserByEmailAsync(email);
-            if (user == null)
+            try
             {
-                // Return null when user not found
-                return null;
-            }
-            else
-            {
+                // Get user by email
+                var user = await userRepository.GetUserByEmailAsync(email);
+                if (user == null)
+                {
+                    // Return null when user not found
+                    return null;
+                }
+
                 // Return user's role
                 return user.Role;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error occurred while get role user by email {email}", email);
+                throw;
             }
         }
         #endregion

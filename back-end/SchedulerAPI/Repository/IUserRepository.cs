@@ -12,5 +12,6 @@ namespace SchedulerAPI.Repository
         Task DeleteUserAsync(int id);
         Task<string> GetRoleByEmail(string email);
         Task<User> GetUserByEmail(string email);
+        IQueryable<User> GetUsersQueryable();
     }
 }

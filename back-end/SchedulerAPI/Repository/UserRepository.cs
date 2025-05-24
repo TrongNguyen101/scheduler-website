@@ -141,8 +141,9 @@ namespace SchedulerAPI.DAO
                 var user = await GetUserById(id);
                 if (user != null)
                 {
-                    // Mark the entity for deletion in the context
-                    context.Users.Remove(user);
+                    // Mark the entity for soft deletion in the context
+                    user.IsDeleted = true;
+                    context.Users.Update(user);
                     // Persist changes to the database
                     await context.SaveChangesAsync();
                 }
@@ -199,6 +200,18 @@ namespace SchedulerAPI.DAO
                 throw new Exception($"Error retrieving user with email {email}: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Returns an <see cref="IQueryable{User}"/> that allows deferred execution of queries
+        /// against the Users DbSet. This is useful for building dynamic filters or pagination
+        /// in higher layers such as services.
+        /// </summary>
+        /// <returns>An <see cref="IQueryable{User}"/> for the Users table.</returns>
+        public IQueryable<User> GetUsersQueryable()
+        {
+            return context.Users.AsQueryable();
+        }
+
         #endregion
     }
 }
