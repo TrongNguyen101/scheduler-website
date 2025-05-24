@@ -63,13 +63,13 @@ export default function LoginPage() {
         setError(result.data.message);
         setLoading(false);
         return;
-      } else if (result.status === 500) {
+      } else {
         setError("Server đang bảo trì hoặc xảy ra lỗi vui lòng thử lại sau");
-        console.log(result.data.message);
         setLoading(false);
+        return;
       }
     } catch (err) {
-      setError("Server đang bảo trì hoặc xảy ra lỗi vui lòng thử lại sau");
+      console.log(err);
       setLoading(false);
     }
   };
