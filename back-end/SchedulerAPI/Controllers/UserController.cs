@@ -20,6 +20,8 @@ namespace SchedulerAPI.Controllers
         /// Injected through dependency injection.
         /// </summary>
         private readonly IUserServices userServices;
+        private readonly IUser2Service  _user2Services;
+
 
         /// <summary>
         /// Logger for recording controller activities and errors.
@@ -35,11 +37,12 @@ namespace SchedulerAPI.Controllers
         /// </summary>
         /// <param name="userServices">The user service implementation for handling user operations.</param>
         /// <param name="logger">The logger for recording controller activities.</param>
-        public UserController(IUserServices userServices, ILogger<UserController> logger)
+        public UserController(IUserServices userServices, ILogger<UserController> logger, IUser2Service user2Services)
         {
             // Store injected dependencies for use throughout the controller
             this.userServices = userServices;
             this.logger = logger;
+            _user2Services = user2Services;
         }
         #endregion
 
@@ -103,6 +106,7 @@ namespace SchedulerAPI.Controllers
             logger.LogInformation($"Fetching user with ID {id}.");
             try
             {
+              //  IQueryable query = _user2Services.SearchQuery();
                 // Attempt to retrieve the user by ID
                 var user = await userServices.GetUserByIdAsync(id);
                 // Check if the user was found
@@ -144,7 +148,6 @@ namespace SchedulerAPI.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-
                 // Add the user via the service layer
                 await userServices.AddUserAsync(addUserDTO);
 
