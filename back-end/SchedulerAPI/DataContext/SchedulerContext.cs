@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SchedulerAPI.Core;
 using SchedulerAPI.Model;
 
 namespace SchedulerAPI.DataContext
@@ -7,7 +8,7 @@ namespace SchedulerAPI.DataContext
     /// Database context class that provides access to database tables and manages the ORM functionality.
     /// This class inherits from EF Core's DbContext and configures the database connection.
     /// </summary>
-    public class SchedulerContext : DbContext
+    public class SchedulerContext : DbContext, IDbContext
     {
         /// <summary>
         /// Default constructor used for design-time activities like migrations
@@ -24,10 +25,18 @@ namespace SchedulerAPI.DataContext
         {
         }
 
+
+
         /// <summary>
         /// DbSet representing the Users table in the database
         /// </summary>
         public virtual DbSet<User> Users { get; set; }
+
+        public Task<int> ExecuteSqlCommandAsync(string sql, params object[] parameters)
+        {
+            return Database.ExecuteSqlRawAsync(sql, parameters);
+
+        }
 
         /// <summary>
         /// Configures the database connection if not already configured
